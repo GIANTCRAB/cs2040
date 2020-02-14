@@ -28,10 +28,16 @@ public class Main {
         // Apply sorting through comparator
         runnerList.sort(new RunnerSecComparator());
 
+        final List<RelayRunner> topSecondLapRunnerList = runnerList
+                .stream()
+                .limit(MAX_SECOND_LEG_RUNNERS + 1)
+                .collect(Collectors.toList());
+
         for (final RelayRunner iRunner : runnerList) {
             Float totalTime = iRunner.getFirstLegTime();
             // Choose 3 runners to be second lap runners
-            final List<RelayRunner> chosenRunnerList = runnerList.stream()
+            final List<RelayRunner> chosenRunnerList = topSecondLapRunnerList
+                    .stream()
                     .filter(rn -> !rn.equals(iRunner))
                     .limit(MAX_SECOND_LEG_RUNNERS)
                     .collect(Collectors.toList());
@@ -46,13 +52,14 @@ public class Main {
         final Optional<Float> bestTiming = runnerMap.keySet().stream().findFirst();
         final RelayRunner bestFirstRunner = bestTiming.map(runnerMap::get).orElse(null);
 
-        final List<RelayRunner> finalRunnerList = runnerList.stream()
+        final List<RelayRunner> finalRunnerList = topSecondLapRunnerList
+                .stream()
                 .filter(rn -> !rn.equals(bestFirstRunner))
                 .limit(MAX_SECOND_LEG_RUNNERS)
                 .collect(Collectors.toList());
         finalRunnerList.add(0, bestFirstRunner);
 
-        System.out.println(bestTiming.get());
+        System.out.printf("%.2f\n", bestTiming.get());
         for (RelayRunner chosenRunner : finalRunnerList) {
             System.out.println(chosenRunner.getName());
         }
