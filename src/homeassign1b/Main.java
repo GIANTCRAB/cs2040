@@ -26,7 +26,7 @@ public class Main {
         }
 
         // Apply sorting through comparator
-        runnerList.sort(new RelayRunnerSecondLegComparator());
+        runnerList.sort(new RunnerSecComparator());
 
         RelayRunner selectedRunner = null;
         Float maxTiming = null;
