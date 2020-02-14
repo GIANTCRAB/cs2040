@@ -14,8 +14,8 @@ public class Main {
 
         final int numberOfRunners = sc.nextInt();
         final int MAX_SECOND_LEG_RUNNERS = 3;
-        final int MAX_RUNNERS = 4;
         final List<RelayRunner> runnerList = new ArrayList<>();
+        final Map<Float, RelayRunner> runnerMap = new TreeMap<>();
 
         for (int i = 0; i < numberOfRunners; i++) {
             final String runnerName = sc.next();
@@ -28,40 +28,32 @@ public class Main {
         // Apply sorting through comparator
         runnerList.sort(new RunnerSecComparator());
 
-        RelayRunner selectedRunner = null;
-        Float maxTiming = null;
         for (final RelayRunner iRunner : runnerList) {
-            int counter = 0;
-            float totalTiming = iRunner.getFirstLegTime();
-
-            for (final RelayRunner jRunner : runnerList) {
-                if (!iRunner.equals(jRunner)) {
-                    totalTiming += jRunner.getSecondLegTime();
-                    counter++;
-                }
-
-                if (counter + 1 == MAX_RUNNERS) {
-                    break;
-                }
+            Float totalTime = iRunner.getFirstLegTime();
+            // Choose 3 runners to be second lap runners
+            final List<RelayRunner> chosenRunnerList = runnerList.stream()
+                    .filter(rn -> !rn.equals(iRunner))
+                    .limit(MAX_SECOND_LEG_RUNNERS)
+                    .collect(Collectors.toList());
+            for (final RelayRunner jRunner : chosenRunnerList) {
+                totalTime += jRunner.getSecondLegTime();
             }
-            if (maxTiming == null || maxTiming > totalTiming) {
-                // Select the fastest runner
-                maxTiming = totalTiming;
-                selectedRunner = iRunner;
-            }
+
+            runnerMap.put(totalTime, iRunner);
         }
 
-        // Choose 3 runners to be second lap runners
-        final RelayRunner finalSelectedRunner = selectedRunner;
-        final List<RelayRunner> chosenRunnerList = runnerList.stream()
-                .filter(rn -> !rn.equals(finalSelectedRunner))
+        // Choose best possible runner
+        final Optional<Float> bestTiming = runnerMap.keySet().stream().findFirst();
+        final RelayRunner bestFirstRunner = bestTiming.map(runnerMap::get).orElse(null);
+
+        final List<RelayRunner> finalRunnerList = runnerList.stream()
+                .filter(rn -> !rn.equals(bestFirstRunner))
                 .limit(MAX_SECOND_LEG_RUNNERS)
                 .collect(Collectors.toList());
-        // Re-insert first lap runner to top
-        chosenRunnerList.add(0, selectedRunner);
+        finalRunnerList.add(0, bestFirstRunner);
 
-        System.out.println(maxTiming);
-        for (RelayRunner chosenRunner : chosenRunnerList) {
+        System.out.println(bestTiming.get());
+        for (RelayRunner chosenRunner : finalRunnerList) {
             System.out.println(chosenRunner.getName());
         }
     }
