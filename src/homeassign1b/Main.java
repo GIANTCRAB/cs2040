@@ -2,8 +2,6 @@ package homeassign1b;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 /**
  * @author WOO HUIREN ( A0202242B )
@@ -18,8 +16,6 @@ public class Main {
         final int MAX_SECOND_LEG_RUNNERS = 3;
         final int MAX_RUNNERS = 4;
         final List<RelayRunner> runnerList = new ArrayList<>();
-        List<RelayRunner> chosenRunnerList = new ArrayList<>();
-        final Map<Float, RelayRunner> teamWithTime = new TreeMap<>();
 
         for (int i = 0; i < numberOfRunners; i++) {
             final String runnerName = sc.next();
@@ -29,65 +25,44 @@ public class Main {
             runnerList.add(new RelayRunner(runnerName, firstLegTime, secondLegTime));
         }
 
-        /**runnerList.sort(new RelayRunnerSecondLegComparator());
+        // Apply sorting through comparator
+        runnerList.sort(new RelayRunnerSecondLegComparator());
 
-        int index = 0;
+        RelayRunner selectedRunner = null;
         Float maxTiming = null;
-        for (int i = 0; i < runnerList.size(); i++) {
-            float totalTiming = runnerList.get(i).getFirstLegTime();
-            for (int j = 0; j < MAX_RUNNERS; j++) {
-                if (i != j) {
-                    totalTiming += runnerList.get(j).getSecondLegTime();
+        for (final RelayRunner iRunner : runnerList) {
+            int counter = 0;
+            float totalTiming = iRunner.getFirstLegTime();
+
+            for (final RelayRunner jRunner : runnerList) {
+                if (!iRunner.equals(jRunner)) {
+                    totalTiming += jRunner.getSecondLegTime();
+                    counter++;
+                }
+
+                if (counter + 1 == MAX_RUNNERS) {
+                    break;
                 }
             }
             if (maxTiming == null || maxTiming > totalTiming) {
+                // Select the fastest runner
                 maxTiming = totalTiming;
-                index = i;
+                selectedRunner = iRunner;
             }
-        }*/
-
-        // get runners by second leg
-        float totalSecondLegTime = 0f;
-        runnerList.sort(new RelayRunnerSecondLegComparator());
-        for (final RelayRunner runner : runnerList) {
-            totalSecondLegTime += runner.getSecondLegTime();
         }
 
-        // Give all possible permutations
-        for (final RelayRunner firstRunner : runnerList) {
-            final float newTiming = firstRunner.getFirstLegTime() + (totalSecondLegTime - firstRunner.getSecondLegTime());
-            teamWithTime.put(newTiming, firstRunner);
-        }
+        // Choose 3 runners to be second lap runners
+        final RelayRunner finalSelectedRunner = selectedRunner;
+        final List<RelayRunner> chosenRunnerList = runnerList.stream()
+                .filter(rn -> !rn.equals(finalSelectedRunner))
+                .limit(MAX_SECOND_LEG_RUNNERS)
+                .collect(Collectors.toList());
+        // Re-insert first lap runner to top
+        chosenRunnerList.add(0, selectedRunner);
 
-        // Choose best possible runner
-        final RelayRunner bestFirstRunner = teamWithTime.keySet().stream().findFirst().map(teamWithTime::get).orElse(null);
-
-        Float totalTime = 0f;
-
-        // re-sort the final list
-        if (bestFirstRunner != null) {
-            totalTime += bestFirstRunner.getFirstLegTime();
-            runnerList.remove(bestFirstRunner);
-            chosenRunnerList = runnerList.stream()
-                    .sorted(new RelayRunnerSecondLegComparator())
-                    .limit(MAX_SECOND_LEG_RUNNERS)
-                    .collect(Collectors.toList());
-            for (RelayRunner chosenRunner : chosenRunnerList) {
-                totalTime += chosenRunner.getSecondLegTime();
-            }
-
-            // re-insert first runner to top of list
-            chosenRunnerList.add(0, bestFirstRunner);
-        }
-
-        System.out.println(totalTime);
+        System.out.println(maxTiming);
         for (RelayRunner chosenRunner : chosenRunnerList) {
             System.out.println(chosenRunner.getName());
-        }
-
-        for (RelayRunner chosenRunner : teamWithTime.values()) {
-            //System.out.println(chosenRunner.getName());
-            //System.out.println(chosenRunner.getFirstLegTime());
         }
     }
 }
