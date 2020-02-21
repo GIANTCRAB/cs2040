@@ -11,16 +11,17 @@ import java.util.StringTokenizer;
  */
 public class Main {
     public static void main(String[] args) throws IOException {
-        final var stringMap = new ArrayList<StringBuilder>();
         final var br = new BufferedReader(new InputStreamReader(System.in));
 
         final int stringCount = Integer.parseInt(br.readLine());
         final int stringOpCount = stringCount - 1;
 
+        final var builderArrayList = new ArrayList<StringBuilder>(stringCount);
+
         // read strings
         // start from index 0
         for (int i = 0; i < stringCount; i++) {
-            stringMap.add(new StringBuilder(br.readLine()));
+            builderArrayList.add(new StringBuilder(br.readLine()));
         }
 
         // read and carry out operations
@@ -30,11 +31,11 @@ public class Main {
             final int operationA = Integer.parseInt(operationLine.nextToken()) - 1;
             final int operationB = Integer.parseInt(operationLine.nextToken()) - 1;
 
-            final StringBuilder operationBString = stringMap.get(operationB);
-            stringMap.get(operationA).append(operationBString);
-            stringMap.get(operationB).delete(0, operationBString.length());
+            final StringBuilder operationBString = builderArrayList.get(operationB);
+            builderArrayList.get(operationA).append(operationBString);
+            builderArrayList.get(operationB).delete(0, operationBString.length());
         }
 
-        stringMap.forEach(v -> System.out.print(v.toString()));
+        builderArrayList.forEach(v -> System.out.print(v.toString()));
     }
 }
