@@ -1,9 +1,7 @@
 package homeassign2a;
 
-import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -40,16 +38,25 @@ public class Main {
                 finalOpId = operationA;
             }
 
-            // Begin retrieval
-            retrieveRecursively(finalOpId, linkedListArray, stringArray);
+            try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(java.io.FileDescriptor.out), StandardCharsets.US_ASCII), 512)) {
+                // Begin retrieval
+                retrieveRecursively(finalOpId, linkedListArray, stringArray, bw);
+                bw.flush();
+            }
         }
     }
 
     // Fetch itself recursively
-    private static void retrieveRecursively(Integer id, List<LinkedList<Integer>> linkedListArray, String[] stringArray) {
+    private static void retrieveRecursively(Integer id, List<LinkedList<Integer>> linkedListArray, String[] stringArray, BufferedWriter bw) throws IOException {
         LinkedList<Integer> currentLinkedList = linkedListArray.get(id);
 
-        System.out.print(stringArray[id]);
-        currentLinkedList.forEach(i -> retrieveRecursively(i, linkedListArray, stringArray));
+        bw.write(stringArray[id]);
+        currentLinkedList.forEach(i -> {
+            try {
+                retrieveRecursively(i, linkedListArray, stringArray, bw);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 }
