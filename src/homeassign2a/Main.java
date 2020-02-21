@@ -30,9 +30,9 @@ public class Main {
         // read and carry out operations
         for (int i = 0; i < stringOpCount; i++) {
             // 0 based index
-            final StringTokenizer operationLine = new StringTokenizer(br.readLine());
-            final int operationA = Integer.parseInt(operationLine.nextToken()) - 1;
-            final int operationB = Integer.parseInt(operationLine.nextToken()) - 1;
+            final var operationLine = new StringTokenizer(br.readLine());
+            final var operationA = Integer.parseInt(operationLine.nextToken()) - 1;
+            final var operationB = Integer.parseInt(operationLine.nextToken()) - 1;
 
             linkedListArray.get(operationA).add(operationB);
 
