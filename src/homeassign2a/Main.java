@@ -11,18 +11,22 @@ import java.util.StringTokenizer;
  * @author WOO HUIREN ( A0202242B )
  */
 public class Main {
+    private static String[] stringArray;
+    private static ArrayList<LinkedList<Integer>> linkedListArray;
+
     public static void main(String[] args) throws IOException {
         final var br = new BufferedReader(new InputStreamReader(System.in));
 
         final int stringCount = Integer.parseInt(br.readLine());
         final int stringOpCount = stringCount - 1;
-        final var linkedListArray = new ArrayList<LinkedList<Integer>>(stringCount);
-        final var builderArrayList = new String[stringCount];
+        linkedListArray = new ArrayList<>(stringCount);
+        stringArray = new String[stringCount];
+
 
         // read strings
         // start from index 0
         for (int i = 0; i < stringCount; i++) {
-            builderArrayList[i] = br.readLine();
+            stringArray[i] = br.readLine();
             linkedListArray.add(new LinkedList<>());
         }
 
@@ -42,16 +46,16 @@ public class Main {
         br.close();
 
         // Begin retrieval
-        retrieveRecursively(linkedListArray, builderArrayList, finalOpId);
+        retrieveRecursively(finalOpId);
     }
 
     // Fetch itself recursively
-    private static void retrieveRecursively(ArrayList<LinkedList<Integer>> list, String[] stringList, Integer id) {
-        final var currentLinkedList = list.get(id);
+    private static void retrieveRecursively(Integer id) {
+        final var currentLinkedList = linkedListArray.get(id);
 
-        System.out.print(stringList[id]);
+        System.out.print(stringArray[id]);
         for (Integer i : currentLinkedList) {
-            retrieveRecursively(list, stringList, i);
+            retrieveRecursively(i);
         }
     }
 }
