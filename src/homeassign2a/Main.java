@@ -46,7 +46,7 @@ public class Main {
     }
 
     // Fetch itself recursively
-    private static void retrieveRecursively(ArrayList<LinkedList<Integer>> list, String[] stringList, int id) {
+    private static void retrieveRecursively(ArrayList<LinkedList<Integer>> list, String[] stringList, Integer id) {
         final var currentLinkedList = list.get(id);
 
         System.out.print(stringList[id]);
