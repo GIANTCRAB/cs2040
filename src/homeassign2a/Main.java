@@ -4,13 +4,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.StringTokenizer;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        final Map<Integer, String> stringMap = new HashMap<>();
-        final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        final var stringMap = new HashMap<Integer, String>();
+        final var br = new BufferedReader(new InputStreamReader(System.in));
 
         final int stringCount = Integer.parseInt(br.readLine());
         final int stringOpCount = stringCount - 1;
