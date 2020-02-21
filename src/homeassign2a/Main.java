@@ -8,7 +8,7 @@ import java.util.StringTokenizer;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        final var stringMap = new HashMap<Integer, String>();
+        final var stringMap = new HashMap<Integer, StringBuilder>();
         final var br = new BufferedReader(new InputStreamReader(System.in));
 
         final int stringCount = Integer.parseInt(br.readLine());
@@ -17,7 +17,7 @@ public class Main {
         // read strings
         // start from index 1
         for (int i = 1; i <= stringCount; i++) {
-            stringMap.put(i, br.readLine());
+            stringMap.put(i, new StringBuilder(br.readLine()));
         }
 
         // read and carry out operations
@@ -26,12 +26,9 @@ public class Main {
             final int operationA = Integer.parseInt(operationLine.nextToken());
             final int operationB = Integer.parseInt(operationLine.nextToken());
 
-            final String opAString = stringMap.get(operationA);
-            final String opBString = stringMap.get(operationB);
-            final String combinedString = opAString.concat(opBString);
+            stringMap.get(operationA).append(stringMap.get(operationB));
 
-            stringMap.replace(operationA, combinedString);
-            stringMap.replace(operationB, "");
+            stringMap.replace(operationB, new StringBuilder(""));
         }
 
         stringMap.forEach((k, v) -> System.out.print(v));
