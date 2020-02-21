@@ -50,8 +50,7 @@ public class Main {
         final var currentLinkedList = list.get(id);
 
         System.out.print(stringList[id]);
-        while (currentLinkedList.size() > 0) {
-            final var i = currentLinkedList.poll();
+        for (Integer i : currentLinkedList) {
             retrieveRecursively(list, stringList, i);
         }
     }
