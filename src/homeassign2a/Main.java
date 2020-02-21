@@ -3,17 +3,16 @@ package homeassign2a;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        final Map<Integer, String> stringMap = new LinkedHashMap<>();
+        final Map<Integer, String> stringMap = new HashMap<>();
         final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        final StringTokenizer st = new StringTokenizer(br.readLine());
-        final int stringCount = Integer.parseInt(st.nextToken());
+        final int stringCount = Integer.parseInt(br.readLine());
         final int stringOpCount = stringCount - 1;
 
         // read strings
@@ -21,9 +20,6 @@ public class Main {
         for (int i = 1; i <= stringCount; i++) {
             stringMap.put(i, br.readLine());
         }
-
-        // final output string
-        String outputString = "";
 
         // read and carry out operations
         for (int i = 0; i < stringOpCount; i++) {
@@ -37,12 +33,8 @@ public class Main {
 
             stringMap.replace(operationA, combinedString);
             stringMap.replace(operationB, "");
-
-            if (i + 1 == stringOpCount) {
-                outputString = combinedString;
-            }
         }
 
-        System.out.println(outputString);
+        stringMap.forEach((k, v) -> System.out.print(v));
     }
 }
