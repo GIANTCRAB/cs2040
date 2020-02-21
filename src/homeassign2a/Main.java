@@ -23,8 +23,7 @@ public class Main {
         // start from index 0
         for (int i = 0; i < stringCount; i++) {
             builderArrayList[i] = br.readLine();
-            final var newLinkedList = new LinkedList<Integer>();
-            linkedListArray.add(newLinkedList);
+            linkedListArray.add(new LinkedList<>());
         }
 
         int finalOpId = 0;
@@ -51,7 +50,8 @@ public class Main {
         final var currentLinkedList = list.get(id);
 
         System.out.print(stringList[id]);
-        for (Integer i : currentLinkedList) {
+        while (currentLinkedList.size() > 0) {
+            final var i = currentLinkedList.poll();
             retrieveRecursively(list, stringList, i);
         }
     }
