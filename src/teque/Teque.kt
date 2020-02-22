@@ -83,13 +83,11 @@ class Teque() {
     }
 
     private fun balance() {
-        if (frontMap.size > backMap.size) {
+        if (frontMap.size > backMap.size + 1) {
             // need to pop frontMap
             val elementToShift = frontMapPop()
             backMapAddFirst(elementToShift)
-        }
-
-        if (frontMap.size + 1 < backMap.size) {
+        } else if (frontMap.size < backMap.size) {
             // need to pop backMap
             val elementToShift = backMapPop()
             frontMapPush(elementToShift)
