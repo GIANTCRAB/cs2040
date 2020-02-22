@@ -18,14 +18,7 @@ class Teque() {
     }
 
     fun addMiddle(element: Int) {
-        if (frontMap.size > backMap.size) {
-            // front is larger, so addFirst to backMap
-            backMapAddFirst(element)
-        } else if (frontMap.size <= backMap.size) {
-            // back is larger OR same size, so push to frontMap
-            frontMapPush(element);
-        }
-
+        frontMapPush(element)
         balance()
     }
 
