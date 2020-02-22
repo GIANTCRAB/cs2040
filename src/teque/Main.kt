@@ -3,14 +3,13 @@ package teque
 import java.io.*
 import java.nio.charset.StandardCharsets
 import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * @author WOO HUIREN ( A0202242B )
  */
 @Throws(IOException::class)
 fun main(args: Array<String>) {
-    val dataArray = ArrayList<Int>()
+    val teque = Teque();
 
     // Begin reader
     BufferedReader(InputStreamReader(System.`in`)).use { br ->
@@ -27,19 +26,18 @@ fun main(args: Array<String>) {
                 when (operationCommand) {
                     // O(1)
                     "push_back" -> {
-                        dataArray.add(operationNumber)
+                        teque.addBack(operationNumber)
                     }
                     // O(1)
                     "push_front" -> {
-                        dataArray.add(0, operationNumber)
+                        teque.addFront(operationNumber)
                     }
-                    // O(N)
+                    // O(1)
                     "push_middle" -> {
-                        val median = ((dataArray.size) + 1) / 2;
-                        dataArray.add(median, operationNumber)
+                        teque.addMiddle(operationNumber)
                     }
                     "get" -> {
-                        bw.write(dataArray[operationNumber].toString() + "\n")
+                        bw.write(teque.getElement(operationNumber) + "\n")
                     }
                 }
             }
