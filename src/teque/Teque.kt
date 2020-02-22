@@ -43,7 +43,7 @@ class Teque() {
         } else {
             // can only find in the back
             // calculate relative position
-            val relativePosition = (backIndexMin + 1) + (positionIndex- frontMap.size)
+            val relativePosition = (backIndexMin + 1) + (positionIndex - frontMap.size)
             backMap[relativePosition].toString()
         }
     }
@@ -82,7 +82,7 @@ class Teque() {
 
     // Remove first element
     private fun backMapPop(): Int {
-        val firstElement = backMap.get(backIndexMin + 1)
+        val firstElement = backMap[backIndexMin + 1]
         backMap.remove(backIndexMin + 1)
         backIndexMin++
 
@@ -90,7 +90,7 @@ class Teque() {
     }
 
     private fun balance() {
-        if (frontMap.size > backMap.size + 1) {
+        if (frontMap.size > backMap.size) {
             // need to pop frontMap
             val elementToShift = frontMapPop()
             backMapAddFirst(elementToShift)
