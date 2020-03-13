@@ -3,13 +3,11 @@ package workstations;
 public class ComputerEvent implements EventTime {
     final private Integer eventStart;
     final private Integer eventEnd;
-    final EventTypes eventType;
     final Computer computer;
 
-    public ComputerEvent(Integer eventStart, Integer eventEnd, EventTypes eventType, Computer computer) {
+    public ComputerEvent(Integer eventStart, Integer eventEnd, Computer computer) {
         this.eventStart = eventStart;
         this.eventEnd = eventEnd;
-        this.eventType = eventType;
         this.computer = computer;
     }
 
@@ -21,10 +19,5 @@ public class ComputerEvent implements EventTime {
     @Override
     public Integer getEventEnd() {
         return this.eventEnd;
-    }
-
-    @Override
-    public EventTypes getEventType() {
-        return this.eventType;
     }
 }

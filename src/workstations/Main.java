@@ -14,9 +14,9 @@ public class Main {
             final int numberOfResearchers = Integer.parseInt(inputInfo.nextToken());
             final int inactivityLockMinutes = Integer.parseInt(inputInfo.nextToken());
 
-            final TreeSet<EventTime> eventTimeQueue = makeQueue(br, numberOfResearchers);
+            final TreeSet<ResearcherEvent> researcherEvents = makeQueue(br, numberOfResearchers);
 
-            final int totalUnlockSavings = processQueue(eventTimeQueue, inactivityLockMinutes);
+            final int totalUnlockSavings = processQueue(researcherEvents, inactivityLockMinutes);
 
             try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(FileDescriptor.out), StandardCharsets.US_ASCII), 512)) {
                 bw.write(String.valueOf(totalUnlockSavings));
@@ -25,8 +25,8 @@ public class Main {
         }
     }
 
-    public static TreeSet<EventTime> makeQueue(final BufferedReader br, final int numberOfResearchers) throws IOException {
-        final TreeSet<EventTime> eventTimeQueue = new TreeSet<>(new EventTimeComparator());
+    public static TreeSet<ResearcherEvent> makeQueue(final BufferedReader br, final int numberOfResearchers) throws IOException {
+        final TreeSet<ResearcherEvent> researcherEvents = new TreeSet<>(new EventTimeComparator());
 
         for (int i = 0; i < numberOfResearchers; i++) {
             final StringTokenizer researcherInfo = new StringTokenizer(br.readLine());
@@ -34,53 +34,50 @@ public class Main {
             final int departureTime = Integer.parseInt(researcherInfo.nextToken()) + arrivalTime;
             final Researcher researcher = new Researcher(arrivalTime, departureTime);
 
-            eventTimeQueue.add(new ResearcherEvent(arrivalTime, departureTime, EventTypes.ARRIVAL, researcher));
+            researcherEvents.add(new ResearcherEvent(arrivalTime, departureTime, researcher));
         }
 
-        return eventTimeQueue;
+        return researcherEvents;
     }
 
-    public static int processQueue(final TreeSet<EventTime> eventTimeQueue, final int inactivityLockMinutes) {
-        final Queue<Computer> availableComputers = new PriorityQueue<>(new ComputerComparator());
+    public static int processQueue(final TreeSet<ResearcherEvent> researcherEvents, final int inactivityLockMinutes) {
+        final Queue<ComputerEvent> computerPriorityQueue = new PriorityQueue<>(new EventTimeComparator());
         int unlockSavings = 0;
 
-        while (!eventTimeQueue.isEmpty()) {
-            final EventTime event = eventTimeQueue.pollFirst();
-            if (event instanceof ComputerEvent) {
-                final ComputerEvent computerEvent = (ComputerEvent) event;
-                if (computerEvent.getEventType() == EventTypes.FREE) {
-                    // Free up the computer as nobody is using it already
-                    availableComputers.add(computerEvent.computer);
+        while (!researcherEvents.isEmpty()) {
+            final ResearcherEvent researcherEvent = researcherEvents.pollFirst();
+
+            final Researcher researcher = researcherEvent.researcher;
+            final Integer computerLockTime = researcher.departureTime + inactivityLockMinutes;
+
+            Computer computer = null;
+            // Find an available computer
+            while (!computerPriorityQueue.isEmpty()) {
+                final ComputerEvent computerEvent = computerPriorityQueue.peek();
+                // Check if computer queue is even ready
+                if (computerEvent.getEventStart() > researcherEvent.getEventStart()) {
+                    // Not ready
+                    break;
+                }
+
+                computerPriorityQueue.remove();
+
+                if (computerEvent.getEventStart() <= researcherEvent.getEventStart()) {
+                    if (computerEvent.getEventEnd() >= researcherEvent.getEventStart()) {
+                        // in range
+                        computer = computerEvent.computer;
+                        unlockSavings++;
+                        break;
+                    }
                 }
             }
 
-            if (event instanceof ResearcherEvent) {
-                final ResearcherEvent researcherEvent = (ResearcherEvent) event;
-                if (researcherEvent.getEventType() == EventTypes.ARRIVAL) {
-                    final Researcher researcher = researcherEvent.researcher;
-                    final Integer computerLockTime = researcher.departureTime + inactivityLockMinutes;
-
-                    Computer computer = null;
-                    // Find an available computer
-                    while (!availableComputers.isEmpty()) {
-                        computer = availableComputers.poll();
-                        if (computer != null && computer.getExpiry() >= researcherEvent.getEventStart()) {
-                            // Update its new locktime
-                            computer.setExpiry(computerLockTime);
-                            unlockSavings++;
-
-                            break;
-                        }
-                    }
-
-                    if (computer == null) {
-                        // Create a new computer for use since there are no available computers
-                        computer = new Computer(computerLockTime);
-                    }
-
-                    eventTimeQueue.add(new ComputerEvent(researcher.departureTime, researcher.departureTime, EventTypes.FREE, computer));
-                }
+            if (computer == null) {
+                // Create a new computer for use since there are no available computers
+                computer = new Computer();
             }
+
+            computerPriorityQueue.add(new ComputerEvent(researcher.departureTime, computerLockTime, computer));
         }
 
         return unlockSavings;
