@@ -14,7 +14,7 @@ public class Main {
             int numberOfResearchers = Integer.parseInt(inputInfo.nextToken());
             int inactivityLockMinutes = Integer.parseInt(inputInfo.nextToken());
 
-            final Queue<EventTime> eventTimeQueue = makeQueue(br, numberOfResearchers);
+            final TreeSet<EventTime> eventTimeQueue = makeQueue(br, numberOfResearchers);
 
             final int totalUnlockSavings = processQueue(eventTimeQueue, inactivityLockMinutes);
 
@@ -25,8 +25,8 @@ public class Main {
         }
     }
 
-    public static Queue<EventTime> makeQueue(BufferedReader br, int numberOfResearchers) throws IOException {
-        Queue<EventTime> eventTimeQueue = new PriorityQueue<>(new EventTimeComparator());
+    public static TreeSet<EventTime> makeQueue(BufferedReader br, int numberOfResearchers) throws IOException {
+        TreeSet<EventTime> eventTimeQueue = new TreeSet<>(new EventTimeComparator());
 
         for (int i = 0; i < numberOfResearchers; i++) {
             var researcherInfo = new StringTokenizer(br.readLine());
@@ -42,12 +42,12 @@ public class Main {
         return eventTimeQueue;
     }
 
-    public static int processQueue(Queue<EventTime> eventTimeQueue, int inactivityLockMinutes) {
+    public static int processQueue(TreeSet<EventTime> eventTimeQueue, int inactivityLockMinutes) {
         TreeSet<Computer> availableComputers = new TreeSet<>(new ComputerComparator());
         int unlockSavings = 0;
 
         while (!eventTimeQueue.isEmpty()) {
-            EventTime event = eventTimeQueue.poll();
+            EventTime event = eventTimeQueue.pollFirst();
             if (event instanceof ComputerEvent) {
                 var computerEvent = (ComputerEvent) event;
                 var computer = computerEvent.computer;
