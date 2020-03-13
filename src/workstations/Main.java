@@ -14,7 +14,7 @@ public class Main {
             final int numberOfResearchers = Integer.parseInt(inputInfo.nextToken());
             final int inactivityLockMinutes = Integer.parseInt(inputInfo.nextToken());
 
-            final TreeSet<ResearcherEvent> researcherEvents = makeQueue(br, numberOfResearchers);
+            final Queue<ResearcherEvent> researcherEvents = makeQueue(br, numberOfResearchers);
 
             final int totalUnlockSavings = processQueue(researcherEvents, inactivityLockMinutes);
 
@@ -25,8 +25,8 @@ public class Main {
         }
     }
 
-    public static TreeSet<ResearcherEvent> makeQueue(final BufferedReader br, final int numberOfResearchers) throws IOException {
-        final TreeSet<ResearcherEvent> researcherEvents = new TreeSet<>(new EventTimeComparator());
+    public static Queue<ResearcherEvent> makeQueue(final BufferedReader br, final int numberOfResearchers) throws IOException {
+        final Queue<ResearcherEvent> researcherEvents = new PriorityQueue<>(new EventTimeComparator());
 
         for (int i = 0; i < numberOfResearchers; i++) {
             final StringTokenizer researcherInfo = new StringTokenizer(br.readLine());
@@ -40,12 +40,12 @@ public class Main {
         return researcherEvents;
     }
 
-    public static int processQueue(final TreeSet<ResearcherEvent> researcherEvents, final int inactivityLockMinutes) {
+    public static int processQueue(final Queue<ResearcherEvent> researcherEvents, final int inactivityLockMinutes) {
         final Queue<ComputerEvent> computerPriorityQueue = new PriorityQueue<>(new EventTimeComparator());
         int unlockSavings = 0;
 
         while (!researcherEvents.isEmpty()) {
-            final ResearcherEvent researcherEvent = researcherEvents.pollFirst();
+            final ResearcherEvent researcherEvent = researcherEvents.poll();
 
             final Researcher researcher = researcherEvent.researcher;
             final Integer computerLockTime = researcher.departureTime + inactivityLockMinutes;
