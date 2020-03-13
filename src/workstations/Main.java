@@ -56,14 +56,6 @@ public class Main {
                     // Free up the computer as nobody is using it already
                     availableComputers.add(computer);
                 }
-
-                if (event.getEventType() == EventTypes.LOCK) {
-                    // Check if the computer's expiry is the event type
-                    if (event.getEventTime().equals(computer.getExpiry())) {
-                        // Remove it from available computers
-                        availableComputers.remove(computer);
-                    }
-                }
             }
 
             if (event instanceof ResearcherEvent) {
@@ -72,25 +64,26 @@ public class Main {
                     final Researcher researcher = researcherEvent.researcher;
                     final Integer computerLockTime = researcher.departureTime + inactivityLockMinutes;
 
-                    Computer computer;
-                    if (!availableComputers.isEmpty()) {
-                        // Use unlocked computer
+                    Computer computer = null;
+                    // Find an available computer
+                    while (!availableComputers.isEmpty()) {
                         computer = availableComputers.pollFirst();
-                        // Update its new locktime
-                        if (computer != null) {
+                        if (computer != null && computer.getExpiry() >= researcherEvent.getEventTime()) {
+                            // Update its new locktime
                             computer.setExpiry(computerLockTime);
-                            // increment savings
                             unlockSavings++;
+
+                            break;
                         }
-                    } else {
-                        // Create a new computer for use
+                    }
+
+                    if (computer == null) {
+                        // Create a new computer for use since there are no available computers
                         computer = new Computer(computerLockTime);
                     }
                     final EventTime computerFreeEvent = new ComputerEvent(researcher.departureTime, EventTypes.FREE, computer);
-                    final EventTime computerLockEvent = new ComputerEvent(computerLockTime, EventTypes.LOCK, computer);
 
                     eventTimeQueue.add(computerFreeEvent);
-                    eventTimeQueue.add(computerLockEvent);
                 }
             }
         }
