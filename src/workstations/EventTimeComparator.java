@@ -8,12 +8,7 @@ public class EventTimeComparator implements Comparator<EventTime> {
         final int firstComparison = o1.getEventStart().compareTo(o2.getEventStart());
         if (firstComparison == 0) {
             // Free'ing should take most priority
-            if (o1.getEventType() == EventTypes.FREE) {
-                // Don't shift since both are priority
-                if (o2.getEventType() == EventTypes.FREE) {
-                    return 0;
-                }
-
+            if (o1.getEventType() == EventTypes.FREE && o2.getEventType() != EventTypes.FREE) {
                 return -1;
             }
 
