@@ -1,14 +1,14 @@
 package workstations;
 
-public class ResearcherEvent implements EventTime {
+public class ComputerEvent implements EventTime {
     final Integer eventTime;
     final EventTypes eventType;
-    final Researcher researcher;
+    final Computer computer;
 
-    public ResearcherEvent(Integer eventTime, EventTypes eventType, Researcher researcher) {
+    public ComputerEvent(Integer eventTime, EventTypes eventType, Computer computer) {
         this.eventTime = eventTime;
         this.eventType = eventType;
-        this.researcher = researcher;
+        this.computer = computer;
     }
 
     @Override
