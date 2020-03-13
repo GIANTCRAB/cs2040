@@ -79,14 +79,12 @@ public class Main {
                         // Update its new locktime
                         if (computer != null) {
                             computer.expiry = computerLockTime;
-                            // Set researcher
-                            computer.setResearcherUsing(researcher);
                             // increment savings
                             unlockSavings++;
                         }
                     } else {
                         // Create a new computer for use
-                        computer = new Computer(researcher, computerLockTime);
+                        computer = new Computer(computerLockTime);
                     }
                     final EventTime computerFreeEvent = new ComputerEvent(researcher.departureTime, EventTypes.FREE, computer);
                     final EventTime computerLockEvent = new ComputerEvent(computerLockTime, EventTypes.LOCK, computer);
