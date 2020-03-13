@@ -1,19 +1,26 @@
 package workstations;
 
 public class ResearcherEvent implements EventTime {
-    final Integer eventTime;
+    final private Integer eventStart;
+    final private Integer eventEnd;
     final EventTypes eventType;
     final Researcher researcher;
 
-    public ResearcherEvent(Integer eventTime, EventTypes eventType, Researcher researcher) {
-        this.eventTime = eventTime;
+    public ResearcherEvent(Integer eventStart, Integer eventEnd, EventTypes eventType, Researcher researcher) {
+        this.eventStart = eventStart;
+        this.eventEnd = eventEnd;
         this.eventType = eventType;
         this.researcher = researcher;
     }
 
     @Override
-    public Integer getEventTime() {
-        return this.eventTime;
+    public Integer getEventStart() {
+        return this.eventStart;
+    }
+
+    @Override
+    public Integer getEventEnd() {
+        return this.eventEnd;
     }
 
     @Override

@@ -34,41 +34,37 @@ public class Main {
             final int departureTime = Integer.parseInt(researcherInfo.nextToken()) + arrivalTime;
             final Researcher researcher = new Researcher(arrivalTime, departureTime);
 
-            final EventTime researcherArrivalEvent = new ResearcherEvent(arrivalTime, EventTypes.ARRIVAL, researcher);
-
-            eventTimeQueue.add(researcherArrivalEvent);
+            eventTimeQueue.add(new ResearcherEvent(arrivalTime, departureTime, EventTypes.ARRIVAL, researcher));
         }
 
         return eventTimeQueue;
     }
 
     public static int processQueue(final TreeSet<EventTime> eventTimeQueue, final int inactivityLockMinutes) {
-        final TreeSet<Computer> availableComputers = new TreeSet<>(new ComputerComparator());
+        final Queue<Computer> availableComputers = new PriorityQueue<>(new ComputerComparator());
         int unlockSavings = 0;
 
         while (!eventTimeQueue.isEmpty()) {
             final EventTime event = eventTimeQueue.pollFirst();
             if (event instanceof ComputerEvent) {
                 final ComputerEvent computerEvent = (ComputerEvent) event;
-                final Computer computer = computerEvent.computer;
-
-                if (event.getEventType() == EventTypes.FREE) {
+                if (computerEvent.getEventType() == EventTypes.FREE) {
                     // Free up the computer as nobody is using it already
-                    availableComputers.add(computer);
+                    availableComputers.add(computerEvent.computer);
                 }
             }
 
             if (event instanceof ResearcherEvent) {
-                if (event.getEventType() == EventTypes.ARRIVAL) {
-                    final ResearcherEvent researcherEvent = (ResearcherEvent) event;
+                final ResearcherEvent researcherEvent = (ResearcherEvent) event;
+                if (researcherEvent.getEventType() == EventTypes.ARRIVAL) {
                     final Researcher researcher = researcherEvent.researcher;
                     final Integer computerLockTime = researcher.departureTime + inactivityLockMinutes;
 
                     Computer computer = null;
                     // Find an available computer
                     while (!availableComputers.isEmpty()) {
-                        computer = availableComputers.pollFirst();
-                        if (computer != null && computer.getExpiry() >= researcherEvent.getEventTime()) {
+                        computer = availableComputers.poll();
+                        if (computer != null && computer.getExpiry() >= researcherEvent.getEventStart()) {
                             // Update its new locktime
                             computer.setExpiry(computerLockTime);
                             unlockSavings++;
@@ -81,9 +77,8 @@ public class Main {
                         // Create a new computer for use since there are no available computers
                         computer = new Computer(computerLockTime);
                     }
-                    final EventTime computerFreeEvent = new ComputerEvent(researcher.departureTime, EventTypes.FREE, computer);
 
-                    eventTimeQueue.add(computerFreeEvent);
+                    eventTimeQueue.add(new ComputerEvent(researcher.departureTime, researcher.departureTime, EventTypes.FREE, computer));
                 }
             }
         }

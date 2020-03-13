@@ -1,6 +1,7 @@
 package workstations;
 
 public interface EventTime {
-    Integer getEventTime();
+    Integer getEventStart();
+    Integer getEventEnd();
     EventTypes getEventType();
 }
