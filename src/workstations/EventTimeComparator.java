@@ -16,11 +16,6 @@ public class EventTimeComparator implements Comparator<EventTime> {
 
                 return -1;
             }
-
-            // Arrival should take priority over LOCK
-            if (o1.getEventType() == EventTypes.ARRIVAL && o2.getEventType() == EventTypes.LOCK) {
-                return -1;
-            }
         }
         return firstComparison;
     }
