@@ -59,7 +59,7 @@ public class Main {
 
                 if (event.getEventType() == EventTypes.LOCK) {
                     // Check if the computer's expiry is the event type
-                    if (event.getEventTime().equals(computer.expiry)) {
+                    if (event.getEventTime().equals(computer.getExpiry())) {
                         // Remove it from available computers
                         availableComputers.remove(computer);
                     }
@@ -70,7 +70,7 @@ public class Main {
                 if (event.getEventType() == EventTypes.ARRIVAL) {
                     final ResearcherEvent researcherEvent = (ResearcherEvent) event;
                     final Researcher researcher = researcherEvent.researcher;
-                    final int computerLockTime = researcher.departureTime + inactivityLockMinutes;
+                    final Integer computerLockTime = researcher.departureTime + inactivityLockMinutes;
 
                     Computer computer;
                     if (!availableComputers.isEmpty()) {
@@ -78,7 +78,7 @@ public class Main {
                         computer = availableComputers.pollFirst();
                         // Update its new locktime
                         if (computer != null) {
-                            computer.expiry = computerLockTime;
+                            computer.setExpiry(computerLockTime);
                             // increment savings
                             unlockSavings++;
                         }
