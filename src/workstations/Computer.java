@@ -5,7 +5,7 @@ public class Computer {
     Integer expiry;
 
     public Computer(Researcher researcherUsing, Integer expiry) {
-        this.researcherUsing = researcherUsing;
+        this.setResearcherUsing(researcherUsing);
         this.expiry = expiry;
     }
 
