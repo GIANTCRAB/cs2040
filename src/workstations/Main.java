@@ -26,13 +26,13 @@ public class Main {
     }
 
     public static Queue<EventTime> makeQueue(BufferedReader br, int numberOfResearchers) throws IOException {
-        Queue<EventTime> eventTimeQueue = new PriorityQueue<>(numberOfResearchers * 3, new EventTimeComparator());
+        Queue<EventTime> eventTimeQueue = new PriorityQueue<>(new EventTimeComparator());
 
         for (int i = 0; i < numberOfResearchers; i++) {
             var researcherInfo = new StringTokenizer(br.readLine());
             var arrivalTime = Integer.parseInt(researcherInfo.nextToken());
             var departureTime = Integer.parseInt(researcherInfo.nextToken()) + arrivalTime;
-            var researcher = new Researcher(i, arrivalTime, departureTime);
+            var researcher = new Researcher(arrivalTime, departureTime);
 
             var researcherArrivalEvent = new ResearcherEvent(arrivalTime, EventTypes.ARRIVAL, researcher);
 
@@ -76,19 +76,23 @@ public class Main {
             if (event instanceof ResearcherEvent) {
                 if (event.getEventType() == EventTypes.ARRIVAL) {
                     ResearcherEvent researcherEvent = (ResearcherEvent) event;
-                    var researcher = researcherEvent.researcher;
-                    var computerLockTime = researcher.departureTime + inactivityLockMinutes;
+                    Researcher researcher = researcherEvent.researcher;
+                    int computerLockTime = researcher.departureTime + inactivityLockMinutes;
 
                     Computer computer;
                     if (!availableComputers.isEmpty()) {
+                        // Use unlocked computer
                         computer = availableComputers.pollFirst();
                         // Update its new locktime
-                        computer.expiry = computerLockTime;
-                        // Set researcher
-                        computer.setResearcherUsing(researcher);
-                        // use unlocked computer, increment savings
-                        unlockSavings++;
+                        if (computer != null) {
+                            computer.expiry = computerLockTime;
+                            // Set researcher
+                            computer.setResearcherUsing(researcher);
+                            // increment savings
+                            unlockSavings++;
+                        }
                     } else {
+                        // Create a new computer for use
                         computer = new Computer(researcherEvent.researcher, computerLockTime);
                     }
                     EventTime computerFreeEvent = new ComputerEvent(researcherEvent.researcher.departureTime, EventTypes.FREE, computer);
