@@ -86,9 +86,9 @@ public class Main {
                         }
                     } else {
                         // Create a new computer for use
-                        computer = new Computer(researcherEvent.researcher, computerLockTime);
+                        computer = new Computer(researcher, computerLockTime);
                     }
-                    final EventTime computerFreeEvent = new ComputerEvent(researcherEvent.researcher.departureTime, EventTypes.FREE, computer);
+                    final EventTime computerFreeEvent = new ComputerEvent(researcher.departureTime, EventTypes.FREE, computer);
                     final EventTime computerLockEvent = new ComputerEvent(computerLockTime, EventTypes.LOCK, computer);
 
                     eventTimeQueue.add(computerFreeEvent);
