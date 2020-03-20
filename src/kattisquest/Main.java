@@ -2,16 +2,14 @@ package kattisquest;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.StringTokenizer;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * @author WOO HUIREN ( A0202242B )
  */
 public class Main {
     public static void main(String[] args) throws IOException {
-        final TreeSet<Quest> quests = new TreeSet<>(new QuestComparator());
-        int highestGold = 0;
+        final TreeMap<Integer, Queue<Integer>> quests = new TreeMap<>();
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
             int commandCount = Integer.parseInt(br.readLine());
@@ -27,18 +25,21 @@ public class Main {
                         case "add":
                             final int energy = Integer.parseInt(operationLine.nextToken());
                             final int gold = Integer.parseInt(operationLine.nextToken());
-
-                            final Quest newQuest = new Quest(energy, gold);
-
-                            if (gold > highestGold) {
-                                highestGold = gold;
+                            final var questEntry = quests.get(energy);
+                            if (questEntry != null) {
+                                // There's already a quest with the same amount of energy requirements
+                                questEntry.add(gold);
+                            } else {
+                                // Create a new quest entry
+                                final Queue<Integer> questPq = new PriorityQueue<>(Comparator.reverseOrder());
+                                questPq.add(gold);
+                                quests.put(energy, questPq);
                             }
-                            quests.add(newQuest);
                             break;
                         case "query":
                             int maxEnergy = Integer.parseInt(operationLine.nextToken());
 
-                            int totalGoldEarned = calculateTotalGold(quests, maxEnergy, highestGold);
+                            int totalGoldEarned = calculateTotalGold(quests, maxEnergy);
                             bw.write(totalGoldEarned + "\n");
 
                             break;
@@ -50,18 +51,23 @@ public class Main {
         }
     }
 
-    public static int calculateTotalGold(TreeSet<Quest> quests, int startingEnergy, int highestGold) {
+    public static int calculateTotalGold(TreeMap<Integer, Queue<Integer>> quests, int startingEnergy) {
         boolean allEnergyExpended = false;
         int energyLeft = startingEnergy;
         int totalGoldEarned = 0;
         while (!allEnergyExpended) {
-            final Quest searchQuest = new Quest(energyLeft, highestGold);
+            final var foundQuest = quests.floorEntry(energyLeft);
 
-            final Quest foundQuest = quests.floor(searchQuest);
             if (foundQuest != null) {
-                energyLeft -= foundQuest.getEnergy();
-                totalGoldEarned += foundQuest.getGold();
-                quests.remove(foundQuest);
+                final var questPq = foundQuest.getValue();
+                final Integer specificQuestEnergy = foundQuest.getKey();
+                final Integer specificQuestGold = questPq.poll();
+
+                energyLeft -= specificQuestEnergy;
+                totalGoldEarned += specificQuestGold;
+                if (questPq.isEmpty()) {
+                    quests.remove(foundQuest.getKey());
+                }
             } else {
                 allEnergyExpended = true;
             }
