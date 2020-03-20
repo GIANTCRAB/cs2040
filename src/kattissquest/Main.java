@@ -39,7 +39,7 @@ public class Main {
                         case "query":
                             int maxEnergy = Integer.parseInt(operationLine.nextToken());
 
-                            int totalGoldEarned = calculateTotalGold(quests, maxEnergy);
+                            long totalGoldEarned = calculateTotalGold(quests, maxEnergy);
                             bw.write(totalGoldEarned + "\n");
 
                             break;
@@ -51,10 +51,10 @@ public class Main {
         }
     }
 
-    public static int calculateTotalGold(TreeMap<Integer, Queue<Integer>> quests, int startingEnergy) {
+    public static long calculateTotalGold(TreeMap<Integer, Queue<Integer>> quests, int startingEnergy) {
         boolean allEnergyExpended = false;
         int energyLeft = startingEnergy;
-        int totalGoldEarned = 0;
+        long totalGoldEarned = 0;
         while (!allEnergyExpended) {
             final var foundQuest = quests.floorEntry(energyLeft);
 
