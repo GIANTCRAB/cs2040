@@ -1,4 +1,4 @@
-package kattisquest;
+package kattissquest;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
