@@ -41,6 +41,7 @@ public class Main {
                             for (int k = 0; k < vertexCount; k++) {
                                 if (vertices[i][k] == 1 && vertices[i][j] == 1 && vertices[j][k] == 1 && i != k && i != j && j != k) {
                                     isWeak = false;
+                                    break;
                                 }
                             }
                         }
