@@ -30,41 +30,48 @@ public class AvlTree<T> {
             current.left.parent = current;
         }
 
-        current.size = 1 + size(current.left) + size(current.right);
+        // Correct the height and sizing
+        current.height = height(current);
+        current.size = size(current.left) + size(current.right) + 1;
+
+        // Activate balancing
+        this.balance(current);
 
         return current;                                          // return the updated BST
     }
 
     Node<T> rotateLeft(Node<T> T) {
+        // must have RIGHT in order to rotate
         Node<T> newParentNode = T.right;
 
         newParentNode.parent = T.parent;
         T.parent = newParentNode;
         if (newParentNode.left != null) {
             newParentNode.left.parent = T;
-        } else {
-            newParentNode.left = T;
         }
+        newParentNode.left = T;
+        System.out.println("rotate left");
 
         // Update height of T and then w
-        T.updateHeight();
-        newParentNode.updateHeight();
+        T.height = height(T);
+        newParentNode.height = height(newParentNode);
         return newParentNode;
     }
 
     Node<T> rotateRight(Node<T> T) {
+        // must have LEFT in order to rotate
         Node<T> newParentNode = T.left;
         newParentNode.parent = T.parent;
         T.parent = newParentNode;
         if (newParentNode.right != null) {
             newParentNode.right.parent = T;
-        } else {
-            newParentNode.right = T;
         }
+        newParentNode.right = T;
+        System.out.println("rotate right");
 
         // Update height of T and then w
-        T.updateHeight();
-        newParentNode.updateHeight();
+        T.height = height(T);
+        newParentNode.height = height(newParentNode);
         return newParentNode;
     }
 
@@ -80,13 +87,13 @@ public class AvlTree<T> {
      */
     int getBalanceFactor(Node<T> T) {
         if (T.left != null && T.right != null) {
-            return T.left.getHeight() - T.right.getHeight();
+            return T.left.height - T.right.height;
         } else {
             if (T.left != null) {
-                return T.left.getHeight();
+                return T.left.height;
             }
             if (T.right != null) {
-                return -T.right.getHeight();
+                return -T.right.height;
             }
         }
 
@@ -260,6 +267,8 @@ public class AvlTree<T> {
             }
         }
 
+        this.balance(this.rootNode);
+
         return T;                                          // return the updated BST
     }
 
@@ -274,6 +283,17 @@ public class AvlTree<T> {
         } else {
             return tNode.size;
         }
+    }
+
+    public int height() {
+        return height(this.rootNode);
+    }
+
+    private int height(Node<T> tNode) {
+        if (tNode == null) {
+            return -1;
+        }
+        return Math.max(height(tNode.left), height(tNode.right)) + 1;
     }
 
     public int rank(int key) {
@@ -292,4 +312,23 @@ public class AvlTree<T> {
             return size(tNode.left);
         }
     }
+
+    public void printTree(Node<T> currPtr, String indent, boolean last) {
+        if (currPtr != null) {
+            System.out.print(indent);
+            if (last) {
+                System.out.print("R----");
+                indent += "   ";
+            } else {
+                System.out.print("L----");
+                indent += "|  ";
+            }
+
+            System.out.println(currPtr.key);
+
+            printTree(currPtr.left, indent, false);
+            printTree(currPtr.right, indent, true);
+        }
+    }
+
 }

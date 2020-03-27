@@ -1,32 +1,16 @@
 package gcpc;
 
 public class Node<T> {
-    public Node<T> left;
-    public Node<T> right;
-    public Node<T> parent;
+    public Node<T> left = null;
+    public Node<T> right = null;
+    public Node<T> parent = null;
     public int key;
     public T value;
-    private int height;
+    public int height;
     public int size;
 
     Node(int key, T value) {
         this.key = key;
         this.value = value;
-    }
-
-    int getHeight() {
-        return this.height;
-    }
-
-    void updateHeight() {
-        this.height = this.calculateHeight(this);
-    }
-
-    int calculateHeight(Node<T> node) {
-        if (node == null) {
-            return -1;
-        } else {
-            return Math.max(calculateHeight(this.left), calculateHeight(this.right)) + 1;
-        }
     }
 }
