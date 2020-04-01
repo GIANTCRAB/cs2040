@@ -12,7 +12,7 @@ public class Main {
         final StringBuilder output = new StringBuilder();
         // We need to init the UFDS array with some int value...
         // When it start failing test case, increase the number
-        final int BIG_INT_VALUE = 4096;
+        final int BIG_INT_VALUE = 524288;
         final UnionFind ufds = new UnionFind(BIG_INT_VALUE);
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
