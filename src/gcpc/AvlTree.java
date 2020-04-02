@@ -53,8 +53,8 @@ public class AvlTree<T> {
         newParentNode.left = T;
 
         // Update size
-        newParentNode.size = T.size;
-        T.size = 1 + size(T.left) + size(T.right);
+        newParentNode.size = size(newParentNode.left) + size(newParentNode.right) + 1;
+        T.size = size(T.left) + size(T.right) + 1;
         // Update height of T and then w
         T.height = Math.max(height(T.left), height(T.right)) + 1;
         newParentNode.height = Math.max(height(newParentNode.left), height(newParentNode.right)) + 1;
@@ -72,8 +72,8 @@ public class AvlTree<T> {
         newParentNode.right = T;
 
         // Update size
-        newParentNode.size = T.size;
-        T.size = 1 + size(T.left) + size(T.right);
+        newParentNode.size = size(newParentNode.left) + size(newParentNode.right) + 1;
+        T.size = size(T.left) + size(T.right) + 1;
         // Update height of T and then w
         T.height = Math.max(height(T.left), height(T.right)) + 1;
         newParentNode.height = Math.max(height(newParentNode.left), height(newParentNode.right)) + 1;
