@@ -53,7 +53,7 @@ public class AvlTree<T> {
         newParentNode.left = T;
 
         // Update size
-        newParentNode.size = size(newParentNode.left) + size(newParentNode.right) + 1;
+        newParentNode.size = T.size;
         T.size = size(T.left) + size(T.right) + 1;
         // Update height of T and then w
         T.height = Math.max(height(T.left), height(T.right)) + 1;
@@ -72,7 +72,7 @@ public class AvlTree<T> {
         newParentNode.right = T;
 
         // Update size
-        newParentNode.size = size(newParentNode.left) + size(newParentNode.right) + 1;
+        newParentNode.size = T.size;
         T.size = size(T.left) + size(T.right) + 1;
         // Update height of T and then w
         T.height = Math.max(height(T.left), height(T.right)) + 1;
@@ -302,6 +302,7 @@ public class AvlTree<T> {
         if (key < tNode.key) {
             return rank(key, tNode.left);
         } else if (key > tNode.key) {
+            // Plus one because of root node
             return size(tNode.left) + rank(key, tNode.right) + 1;
         } else {
             return size(tNode.left);
