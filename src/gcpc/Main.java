@@ -2,9 +2,7 @@ package gcpc;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 
 /**
  * @author WOO HUIREN ( A0202242B )
@@ -18,6 +16,7 @@ public class Main {
         HashMap<Integer, List<Team>> teamScoreHashMap = new HashMap<>();
 
         final StringBuilder output = new StringBuilder();
+        final TeamComparator teamComparator = new TeamComparator();
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
             StringTokenizer teamAndEventInfo = new StringTokenizer(br.readLine());
@@ -51,30 +50,42 @@ public class Main {
                     }
                 } else {
                     tree.delete(retrievedTeam.getScore());
+                    // Update record on hashtable
+                    final var oldHashRecord = teamScoreHashMap.get(retrievedTeam.getScore());
+                    oldHashRecord.remove(retrievedTeam);
                 }
 
                 retrievedTeam.incrementScore().addPenalty(penalty);
                 // Re-insert into tree
                 tree.insert(retrievedTeam.getScore(), 0);
 
+                // Update hashtable
+                final var newHashRecord = teamScoreHashMap.getOrDefault(retrievedTeam.getScore(), new ArrayList<>());
+                newHashRecord.add(retrievedTeam);
+                teamScoreHashMap.put(retrievedTeam.getScore(), newHashRecord);
+
                 // TODO: Get reverse rank
                 int teamOneRank = tree.rank(teamOne.getScore());
-                //output.append(teamOneRank + 1);
-                //output.append("\n");
+                // Get rank within hashtable
+                final var teamOneRankRecord = teamScoreHashMap.get(teamOne.getScore());
+                if (teamOneRankRecord != null) {
+                    teamOneRankRecord.sort(teamComparator);
+                    for (int j = 0; j < teamOneRankRecord.size(); j++) {
+                        if (teamOneRankRecord.get(j).equals(teamOne)) {
+                            teamOneRank += j;
+                            break;
+                        }
+                    }
+                }
+                output.append(teamOneRank);
+                output.append("\n");
             }
+
+            tree.printTree(tree.rootNode, "", true);
         }
 
 
         try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(java.io.FileDescriptor.out), StandardCharsets.US_ASCII), 512)) {
-            // Whatever
-            output.append("2");
-            output.append("\n");
-            output.append("3");
-            output.append("\n");
-            output.append("2");
-            output.append("\n");
-            output.append("1");
-            output.append("\n");
             bw.write(output.toString());
             bw.flush();
         }
