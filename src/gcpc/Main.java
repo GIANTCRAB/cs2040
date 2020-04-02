@@ -21,6 +21,8 @@ public class Main {
         tree.printTree(tree.rootNode, "", true);
 
         tree.delete(13);
+        tree.insert(7, 5);
+        tree.insert(6, 5);
 
         System.out.println("After Deletion: ");
         tree.printTree(tree.rootNode, "", true);

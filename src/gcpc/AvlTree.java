@@ -1,7 +1,5 @@
 package gcpc;
 
-import java.util.Comparator;
-
 /**
  * Needs to be able to retrieve rank
  *
@@ -15,12 +13,15 @@ public class AvlTree<T> {
     }
 
     public void insert(int key, T value) {
-        final Node<T> newNode = new Node<T>(key, value);
+        final Node<T> newNode = new Node<>(key, value);
         this.rootNode = insertRecursive(this.rootNode, newNode);
     }
 
     private Node<T> insertRecursive(Node<T> current, Node<T> newNode) {
-        if (current == null) return newNode;          // insertion point is found
+        if (current == null) {
+            // insertion point is found
+            return newNode;
+        }
 
         if (current.key < newNode.key) {                                      // search to the right
             current.right = insertRecursive(current.right, newNode);
@@ -31,47 +32,45 @@ public class AvlTree<T> {
         }
 
         // Correct the height and sizing
-        current.height = height(current);
+        current.height = Math.max(height(current.left), height(current.right)) + 1;
         current.size = size(current.left) + size(current.right) + 1;
 
         // Activate balancing
-        this.balance(current);
+        current = this.balance(current);
 
         return current;                                          // return the updated BST
     }
 
     Node<T> rotateLeft(Node<T> T) {
-        // must have RIGHT in order to rotate
         Node<T> newParentNode = T.right;
 
         newParentNode.parent = T.parent;
         T.parent = newParentNode;
+        T.right = newParentNode.left;
         if (newParentNode.left != null) {
             newParentNode.left.parent = T;
         }
         newParentNode.left = T;
-        System.out.println("rotate left");
 
         // Update height of T and then w
-        T.height = height(T);
-        newParentNode.height = height(newParentNode);
+        T.height = Math.max(height(T.left), height(T.right)) + 1;
+        newParentNode.height = Math.max(height(newParentNode.left), height(newParentNode.right)) + 1;
         return newParentNode;
     }
 
     Node<T> rotateRight(Node<T> T) {
-        // must have LEFT in order to rotate
         Node<T> newParentNode = T.left;
         newParentNode.parent = T.parent;
         T.parent = newParentNode;
+        T.left = newParentNode.right;
         if (newParentNode.right != null) {
             newParentNode.right.parent = T;
         }
         newParentNode.right = T;
-        System.out.println("rotate right");
 
         // Update height of T and then w
-        T.height = height(T);
-        newParentNode.height = height(newParentNode);
+        T.height = Math.max(height(T.left), height(T.right)) + 1;
+        newParentNode.height = Math.max(height(newParentNode.left), height(newParentNode.right)) + 1;
         return newParentNode;
     }
 
@@ -86,58 +85,43 @@ public class AvlTree<T> {
      * @return
      */
     int getBalanceFactor(Node<T> T) {
-        if (T.left != null && T.right != null) {
-            return T.left.height - T.right.height;
-        } else {
-            if (T.left != null) {
-                return T.left.height;
-            }
-            if (T.right != null) {
-                return -T.right.height;
-            }
+        if (T != null) {
+            return height(T.left) - height(T.right);
         }
 
         return 0;
     }
 
-    void balance(Node<T> T) {
+    Node<T> balance(Node<T> T) {
         final int selfBalanceFactor = this.getBalanceFactor(T);
 
         if (selfBalanceFactor == 2) {
             // If balance factor is 2, that means there MUST be something on the left
             final int leftBalanceFactor = this.getBalanceFactor(T.left);
             if (0 <= leftBalanceFactor && leftBalanceFactor <= 1) {
-                this.rotateRight(T);
+                return this.rotateRight(T);
             }
 
             if (leftBalanceFactor == -1) {
-                this.rotateLeft(T.left);
-                this.rotateRight(T);
+                T.left = this.rotateLeft(T.left);
+                return this.rotateRight(T);
             }
-        }
-
-        if (selfBalanceFactor > 2) {
-            // Request for left child to be balanced
-            this.balance(T.left);
         }
 
         if (selfBalanceFactor == -2) {
             // If balance factor is -2, that means there MUST be something on the right
             final int rightBalanceFactor = this.getBalanceFactor(T.right);
             if (-1 <= rightBalanceFactor && rightBalanceFactor <= 0) {
-                this.rotateRight(T);
+                return this.rotateLeft(T);
             }
 
             if (rightBalanceFactor == 1) {
-                this.rotateRight(T.right);
-                this.rotateLeft(T);
+                T.right = this.rotateRight(T.right);
+                return this.rotateLeft(T);
             }
         }
 
-        if (selfBalanceFactor < -2) {
-            // Request for right child to be balanced
-            this.balance(T.right);
-        }
+        return T;
     }
 
     // public method called to search for a value v.
@@ -254,10 +238,10 @@ public class AvlTree<T> {
         else {                                            // this is the node to be deleted
             if (T.left == null && T.right == null)                   // this is a leaf
                 T = null;                                      // simply erase this node
-            else if (T.left == null && T.right != null) {   // only one child at right
+            else if (T.left == null) {   // only one child at right
                 T.right.parent = T.parent;
                 T = T.right;                                                 // bypass T
-            } else if (T.left != null && T.right == null) {    // only one child at left
+            } else if (T.right == null) {    // only one child at left
                 T.left.parent = T.parent;
                 T = T.left;                                                  // bypass T
             } else {                                 // has two children, find successor
@@ -267,7 +251,11 @@ public class AvlTree<T> {
             }
         }
 
-        this.balance(this.rootNode);
+        // Update height and then call balancing
+        if (T != null) {
+            T.height = Math.max(height(T.left), height(T.right)) + 1;
+            T = this.balance(T);
+        }
 
         return T;                                          // return the updated BST
     }
@@ -293,7 +281,7 @@ public class AvlTree<T> {
         if (tNode == null) {
             return -1;
         }
-        return Math.max(height(tNode.left), height(tNode.right)) + 1;
+        return tNode.height;
     }
 
     public int rank(int key) {
@@ -313,8 +301,15 @@ public class AvlTree<T> {
         }
     }
 
-    public void printTree(Node<T> currPtr, String indent, boolean last) {
-        if (currPtr != null) {
+    /**
+     * Tree Printer for debugging purposes
+     *
+     * @param currentPrintTree
+     * @param indent
+     * @param last
+     */
+    public void printTree(Node<T> currentPrintTree, String indent, boolean last) {
+        if (currentPrintTree != null) {
             System.out.print(indent);
             if (last) {
                 System.out.print("R----");
@@ -324,10 +319,10 @@ public class AvlTree<T> {
                 indent += "|  ";
             }
 
-            System.out.println(currPtr.key);
+            System.out.println(currentPrintTree.key);
 
-            printTree(currPtr.left, indent, false);
-            printTree(currPtr.right, indent, true);
+            printTree(currentPrintTree.left, indent, false);
+            printTree(currentPrintTree.right, indent, true);
         }
     }
 
