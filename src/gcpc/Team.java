@@ -24,4 +24,8 @@ public class Team {
         this.penalty += penalty;
         return this;
     }
+
+    public Integer getPenalty() {
+        return this.penalty;
+    }
 }
