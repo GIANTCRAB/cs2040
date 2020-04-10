@@ -76,23 +76,23 @@ public class MinimumSpanningTree {
 
         // Allocate subsets array
         Subset[] subsets = new Subset[this.vertexCount];
-        for (int i = 0; i < this.vertexCount; ++i) {
+        for (int i = 0; i < this.vertexCount; i++) {
             subsets[i] = new Subset(i, 0);
         }
 
         for (int i = 0; i < this.vertexCount; i++) {
-            Edge next_edge = this.edges.get(i);
+            final Edge nextEdge = this.edges.get(i);
 
             // Check their parents (udfs)
-            Integer x = find(subsets, next_edge.getV());
-            Integer y = find(subsets, next_edge.getW());
+            Integer x = find(subsets, nextEdge.getV());
+            Integer y = find(subsets, nextEdge.getW());
 
             // Detect for cycle, if they have same parents, discard.
             if (!x.equals(y)) {
                 // They do not have same parents, union them.
-                output.append(next_edge.getW() + 1)
+                output.append(nextEdge.getW() + 1)
                         .append(" ")
-                        .append((next_edge.getV() + 1))
+                        .append((nextEdge.getV() + 1))
                         .append("\n");
                 this.union(subsets, x, y);
             }
