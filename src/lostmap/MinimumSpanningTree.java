@@ -9,8 +9,8 @@ import java.util.List;
  * @author WOO HUIREN ( A0202242B )
  */
 public class MinimumSpanningTree {
-    private List<Edge> edges;
-    private int vertexCount;
+    private final List<Edge> edges;
+    private final int vertexCount;
 
     MinimumSpanningTree(int vertexCount) {
         this.vertexCount = vertexCount;
@@ -27,7 +27,7 @@ public class MinimumSpanningTree {
     }
 
     /**
-     * Path Compression by finding root and making the found root as the parent of i
+     * Find root
      *
      * @param subsets
      * @param i
@@ -75,17 +75,15 @@ public class MinimumSpanningTree {
         this.edges.sort(new EdgeComparator());
 
         // Allocate subsets array
-        Subset[] subsets = new Subset[this.vertexCount];
+        final Subset[] subsets = new Subset[this.vertexCount];
         for (int i = 0; i < this.vertexCount; i++) {
             subsets[i] = new Subset(i, 0);
         }
 
-        for (int i = 0; i < this.vertexCount; i++) {
-            final Edge nextEdge = this.edges.get(i);
-
+        this.edges.forEach(nextEdge -> {
             // Check their parents (udfs)
-            Integer x = find(subsets, nextEdge.getV());
-            Integer y = find(subsets, nextEdge.getW());
+            final Integer x = find(subsets, nextEdge.getV());
+            final Integer y = find(subsets, nextEdge.getW());
 
             // Detect for cycle, if they have same parents, discard.
             if (!x.equals(y)) {
@@ -96,7 +94,7 @@ public class MinimumSpanningTree {
                         .append("\n");
                 this.union(subsets, x, y);
             }
-        }
+        });
 
         return output;
     }
