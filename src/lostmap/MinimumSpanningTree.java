@@ -1,0 +1,103 @@
+package lostmap;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Kruskal’s Minimum Spanning Tree
+ *
+ * @author WOO HUIREN ( A0202242B )
+ */
+public class MinimumSpanningTree {
+    private List<Edge> edges;
+    private int vertexCount;
+
+    MinimumSpanningTree(int vertexCount) {
+        this.vertexCount = vertexCount;
+        this.edges = new ArrayList<>(vertexCount - 1);
+    }
+
+    /**
+     * Adds an undirected edge to MST
+     *
+     * @param e
+     */
+    public void addEdge(Edge e) {
+        this.edges.add(e);
+    }
+
+    /**
+     * Path Compression by finding root and making the found root as the parent of i
+     *
+     * @param subsets
+     * @param i
+     * @return
+     */
+    Integer find(Subset[] subsets, Integer i) {
+        if (!subsets[i].parent.equals(i)) {
+            subsets[i].parent = find(subsets, subsets[i].parent);
+        }
+
+        return subsets[i].parent;
+    }
+
+    /**
+     * Union by rank
+     *
+     * @param subsets
+     * @param x
+     * @param y
+     */
+    void union(Subset[] subsets, Integer x, Integer y) {
+        Integer xRoot = find(subsets, x);
+        Integer yRoot = find(subsets, y);
+
+        if (subsets[xRoot].rank < subsets[yRoot].rank) {
+            subsets[xRoot].parent = yRoot;
+        } else if (subsets[xRoot].rank > subsets[yRoot].rank) {
+            subsets[yRoot].parent = xRoot;
+        } else {
+            subsets[yRoot].parent = xRoot;
+            subsets[xRoot].rank++;
+        }
+    }
+
+    /**
+     * A modified version of kruskal.
+     * Instead of returning the complete kruskal, we return a String Builder with the data on what has been union joined
+     *
+     * @return
+     */
+    StringBuilder runKruskal() {
+        final StringBuilder output = new StringBuilder();
+
+        // Sort the edges by their distance
+        this.edges.sort(new EdgeComparator());
+
+        // Allocate subsets array
+        Subset[] subsets = new Subset[this.vertexCount];
+        for (int i = 0; i < this.vertexCount; ++i) {
+            subsets[i] = new Subset(i, 0);
+        }
+
+        for (int i = 0; i < this.vertexCount; i++) {
+            Edge next_edge = this.edges.get(i);
+
+            // Check their parents (udfs)
+            Integer x = find(subsets, next_edge.getV());
+            Integer y = find(subsets, next_edge.getW());
+
+            // Detect for cycle, if they have same parents, discard.
+            if (!x.equals(y)) {
+                // They do not have same parents, union them.
+                output.append(next_edge.getW() + 1)
+                        .append(" ")
+                        .append((next_edge.getV() + 1))
+                        .append("\n");
+                this.union(subsets, x, y);
+            }
+        }
+
+        return output;
+    }
+}
