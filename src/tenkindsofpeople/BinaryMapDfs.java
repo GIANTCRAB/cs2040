@@ -4,6 +4,8 @@ import java.util.*;
 
 /**
  * Using code from IslandsDfs
+ *
+ * @author WOO HUIREN ( A0202242B )
  */
 class BinaryMapDfs {
     // Coordinates as key and group as value

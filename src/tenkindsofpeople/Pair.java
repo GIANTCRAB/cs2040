@@ -2,6 +2,9 @@ package tenkindsofpeople;
 
 import java.util.Objects;
 
+/**
+ * @author WOO HUIREN ( A0202242B )
+ */
 class Pair<T, E> {
     final T firstData;
     final E secondData;
