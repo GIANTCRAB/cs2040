@@ -42,22 +42,22 @@ class MillionaireSearch {
 
                     // Make sure the newly added places are not visited as well
                     if (currentNode.getPosY() > 0 && !visitedMap[(currentNode.getPosY() - 1) * endPositionX + currentNode.getPosX()]) {
-                        final int cost = this.map[currentNode.getPosY() - 1][currentNode.getPosX()] - this.map[currentNode.getPosY()][currentNode.getPosX()];
+                        final int cost = Math.max(currentNode.getCost(), this.map[currentNode.getPosY() - 1][currentNode.getPosX()] - this.map[currentNode.getPosY()][currentNode.getPosX()]);
                         priorityQueue.add(new WeightedNode<>(currentNode.getPosY() - 1, currentNode.getPosX(), cost));
                     }
 
                     if (currentNode.getPosY() < endPositionY - 1 && !visitedMap[(currentNode.getPosY() + 1) * endPositionX + currentNode.getPosX()]) {
-                        final int cost = this.map[currentNode.getPosY() + 1][currentNode.getPosX()] - this.map[currentNode.getPosY()][currentNode.getPosX()];
+                        final int cost = Math.max(currentNode.getCost(), this.map[currentNode.getPosY() + 1][currentNode.getPosX()] - this.map[currentNode.getPosY()][currentNode.getPosX()]);
                         priorityQueue.add(new WeightedNode<>(currentNode.getPosY() + 1, currentNode.getPosX(), cost));
                     }
 
                     if (currentNode.getPosX() > 0 && !visitedMap[currentNode.getPosY() * endPositionX + (currentNode.getPosX() - 1)]) {
-                        final int cost = this.map[currentNode.getPosY()][currentNode.getPosX() - 1] - this.map[currentNode.getPosY()][currentNode.getPosX()];
+                        final int cost = Math.max(currentNode.getCost(), this.map[currentNode.getPosY()][currentNode.getPosX() - 1] - this.map[currentNode.getPosY()][currentNode.getPosX()]);
                         priorityQueue.add(new WeightedNode<>(currentNode.getPosY(), currentNode.getPosX() - 1, cost));
                     }
 
                     if (currentNode.getPosX() < endPositionX - 1 && !visitedMap[currentNode.getPosY() * endPositionX + (currentNode.getPosX() + 1)]) {
-                        final int cost = this.map[currentNode.getPosY()][currentNode.getPosX() + 1] - this.map[currentNode.getPosY()][currentNode.getPosX()];
+                        final int cost = Math.max(currentNode.getCost(), this.map[currentNode.getPosY()][currentNode.getPosX() + 1] - this.map[currentNode.getPosY()][currentNode.getPosX()]);
                         priorityQueue.add(new WeightedNode<>(currentNode.getPosY(), currentNode.getPosX() + 1, cost));
                     }
                 }
