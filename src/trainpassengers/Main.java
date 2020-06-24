@@ -1,4 +1,4 @@
-package homeassign1a;
+package trainpassengers;
 
 import java.util.Scanner;
 
