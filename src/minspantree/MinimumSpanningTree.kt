@@ -10,18 +10,11 @@ import kotlin.collections.HashMap
 class MinimumSpanningTree(private val nodeCount: Int, private val edgeCount: Int) {
     var totalCost = 0
     private val marked = BooleanArray(this.nodeCount)
-    private val nodesArray: MutableList<Node> = ArrayList(this.nodeCount)
-    private val adjacencyList: HashMap<Node, MutableList<Edge>> = HashMap(this.nodeCount)
+    private val adjacencyList: HashMap<Int, MutableList<Edge>> = HashMap(this.nodeCount)
     private val edgeQueue: Queue<Edge> = PriorityQueue<Edge>(this.edgeCount, EdgeComparator())
 
-    init {
-        for (i in 0 until this.nodeCount) {
-            this.nodesArray.add(Node(i))
-        }
-    }
-
     fun addNewEdge(firstNodeId: Int, secondNodeId: Int, weight: Int) {
-        val newEdge = Edge(this.nodesArray[firstNodeId], this.nodesArray[secondNodeId], weight)
+        val newEdge = Edge(firstNodeId, secondNodeId, weight)
         this.addEdge(newEdge)
     }
 
@@ -30,18 +23,18 @@ class MinimumSpanningTree(private val nodeCount: Int, private val edgeCount: Int
         val mst: MutableList<Edge> = ArrayList(this.edgeCount)
         this.totalCost = 0
         // pick the first node?
-        scan(this.nodesArray[0])
+        scan(0)
 
         while (this.edgeQueue.isNotEmpty()) {
             val retrievedEdge = this.edgeQueue.poll()
             // Check if nodes are marked. If both are marked, the link is redundant
-            if (!this.marked[retrievedEdge.firstNode.id] || !this.marked[retrievedEdge.secondNode.id]) {
+            if (!this.marked[retrievedEdge.firstNodeId] || !this.marked[retrievedEdge.secondNodeId]) {
                 // Scan the adjacency of these 2 nodes
-                if (!this.marked[retrievedEdge.firstNode.id]) {
-                    scan(retrievedEdge.firstNode)
+                if (!this.marked[retrievedEdge.firstNodeId]) {
+                    scan(retrievedEdge.firstNodeId)
                 }
-                if (!this.marked[retrievedEdge.secondNode.id]) {
-                    scan(retrievedEdge.secondNode)
+                if (!this.marked[retrievedEdge.secondNodeId]) {
+                    scan(retrievedEdge.secondNodeId)
                 }
 
                 // Add to MST
@@ -60,21 +53,18 @@ class MinimumSpanningTree(private val nodeCount: Int, private val edgeCount: Int
     }
 
     private fun addEdge(edge: Edge) {
-        val firstNodeAdjacency = this.adjacencyList.getOrDefault(edge.firstNode, ArrayList())
+        val firstNodeAdjacency = this.adjacencyList.getOrDefault(edge.firstNodeId, ArrayList())
         firstNodeAdjacency.add(edge)
-        this.adjacencyList[edge.firstNode] = firstNodeAdjacency
-        val secondNodeAdjacency = this.adjacencyList.getOrDefault(edge.secondNode, ArrayList())
+        this.adjacencyList[edge.firstNodeId] = firstNodeAdjacency
+        val secondNodeAdjacency = this.adjacencyList.getOrDefault(edge.secondNodeId, ArrayList())
         secondNodeAdjacency.add(edge)
-        this.adjacencyList[edge.secondNode] = secondNodeAdjacency
+        this.adjacencyList[edge.secondNodeId] = secondNodeAdjacency
     }
 
-
-    private fun scan(node: Node) {
-        this.marked[node.id] = true
-        this.adjacencyList[node]?.forEach {
-            if (!this.marked[it.firstNode.id] || !this.marked[it.secondNode.id]) {
-                this.edgeQueue.add(it)
-            }
+    private fun scan(nodeId: Int) {
+        this.marked[nodeId] = true
+        this.adjacencyList[nodeId]?.asSequence()?.filter { !this.marked[it.firstNodeId] || !this.marked[it.secondNodeId] }?.forEach {
+            this.edgeQueue.add(it)
         }
     }
 }

@@ -20,7 +20,7 @@ fun main(args: Array<String>) {
                 }
 
                 // As long as edge count is at least (n - 1), valid to construct MST
-                if (edgeCount != 0 && nodeCount - 1 <= edgeCount) {
+                if (nodeCount != 0 && edgeCount != 0 && nodeCount - 1 <= edgeCount) {
                     val minimumSpanningTree = MinimumSpanningTree(nodeCount, edgeCount)
 
                     // Loop through edges
@@ -37,7 +37,7 @@ fun main(args: Array<String>) {
                     if (result != null) {
                         bw.write(minimumSpanningTree.totalCost.toString() + "\n")
                         result.forEach {
-                            bw.write(it.firstNode.id.toString() + " " + it.secondNode.id.toString() + "\n")
+                            bw.write(it.firstNodeId.toString() + " " + it.secondNodeId.toString() + "\n")
                         }
                     } else {
                         bw.write("Impossible\n")

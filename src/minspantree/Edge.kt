@@ -1,3 +1,3 @@
 package minspantree
 
-class Edge(val firstNode: Node, val secondNode: Node, val weight: Int)
+class Edge(val firstNodeId: Int, val secondNodeId: Int, val weight: Int)
