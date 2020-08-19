@@ -11,11 +11,17 @@ class MinimumSpanningTree(private val nodeCount: Int, private val edgeCount: Int
     var totalCost = 0
     private val marked = BooleanArray(this.nodeCount)
     private val adjacencyList: HashMap<Int, MutableList<Edge>> = HashMap(this.nodeCount)
-    private val edgeQueue: Queue<Edge> = PriorityQueue<Edge>(this.edgeCount, EdgeComparator())
+    private val edgeQueue: Queue<Edge> = PriorityQueue(this.edgeCount, EdgeComparator())
 
     fun addNewEdge(firstNodeId: Int, secondNodeId: Int, weight: Int) {
-        val newEdge = Edge(firstNodeId, secondNodeId, weight)
-        this.addEdge(newEdge)
+        // "x < y" in requirement
+        if (firstNodeId < secondNodeId) {
+            val newEdge = Edge(firstNodeId, secondNodeId, weight)
+            this.addEdge(newEdge)
+        } else {
+            val newEdge = Edge(secondNodeId, firstNodeId, weight)
+            this.addEdge(newEdge)
+        }
     }
 
     // Lazy removal, space time complexity: O(E log(E))
@@ -48,6 +54,8 @@ class MinimumSpanningTree(private val nodeCount: Int, private val edgeCount: Int
             null
         } else {
             // All nodes are marked
+            // Lexicographic order of integers needed
+            mst.sortWith(EdgeSorterComparator())
             mst
         }
     }
@@ -57,7 +65,6 @@ class MinimumSpanningTree(private val nodeCount: Int, private val edgeCount: Int
         firstNodeAdjacency.add(edge)
         this.adjacencyList[edge.firstNodeId] = firstNodeAdjacency
         val secondNodeAdjacency = this.adjacencyList.getOrDefault(edge.secondNodeId, ArrayList())
-        secondNodeAdjacency.add(edge)
         this.adjacencyList[edge.secondNodeId] = secondNodeAdjacency
     }
 

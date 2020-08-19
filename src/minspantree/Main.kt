@@ -17,33 +17,41 @@ fun main(args: Array<String>) {
 
                 if (nodeCount == 0 && edgeCount == 0) {
                     break
-                }
+                } else {
+                    if (nodeCount != 0 && edgeCount != 0) {
+                        // Make sure edges is at least n-1
+                        if (nodeCount - 1 > edgeCount) {
+                            // Read through but do not construct since it will be an invalid MST
+                            for (i in 0 until edgeCount) {
+                                br.readLine()
+                            }
+                            bw.write("Impossible\n")
+                        } else {
+                            val minimumSpanningTree = MinimumSpanningTree(nodeCount, edgeCount)
 
-                // As long as edge count is at least (n - 1), valid to construct MST
-                if (nodeCount != 0 && edgeCount != 0 && nodeCount - 1 <= edgeCount) {
-                    val minimumSpanningTree = MinimumSpanningTree(nodeCount, edgeCount)
+                            // Loop through edges
+                            for (i in 0 until edgeCount) {
+                                val edgeInfo = StringTokenizer(br.readLine())
+                                val firstNodeId = edgeInfo.nextToken().toInt()
+                                val secondNodeId = edgeInfo.nextToken().toInt()
+                                val edgeWeight = edgeInfo.nextToken().toInt()
 
-                    // Loop through edges
-                    for (i in 0 until edgeCount) {
-                        val edgeInfo = StringTokenizer(br.readLine())
-                        val firstNodeId = edgeInfo.nextToken().toInt()
-                        val secondNodeId = edgeInfo.nextToken().toInt()
-                        val edgeWeight = edgeInfo.nextToken().toInt()
+                                minimumSpanningTree.addNewEdge(firstNodeId, secondNodeId, edgeWeight)
+                            }
 
-                        minimumSpanningTree.addNewEdge(firstNodeId, secondNodeId, edgeWeight)
-                    }
-
-                    val result = minimumSpanningTree.getMst()
-                    if (result != null) {
-                        bw.write(minimumSpanningTree.totalCost.toString() + "\n")
-                        result.forEach {
-                            bw.write(it.firstNodeId.toString() + " " + it.secondNodeId.toString() + "\n")
+                            val result = minimumSpanningTree.getMst()
+                            if (result != null) {
+                                bw.write(minimumSpanningTree.totalCost.toString() + "\n")
+                                result.forEach {
+                                    bw.write(it.firstNodeId.toString() + " " + it.secondNodeId.toString() + "\n")
+                                }
+                            } else {
+                                bw.write("Impossible\n")
+                            }
                         }
                     } else {
                         bw.write("Impossible\n")
                     }
-                } else {
-                    bw.write("Impossible\n")
                 }
             }
 
