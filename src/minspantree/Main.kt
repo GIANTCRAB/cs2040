@@ -7,7 +7,10 @@ import java.util.*
 fun main(args: Array<String>) {
     // Begin reader
     BufferedReader(InputStreamReader(System.`in`)).use { br ->
-        BufferedWriter(OutputStreamWriter(FileOutputStream(FileDescriptor.out), StandardCharsets.US_ASCII), 512).use { bw ->
+        BufferedWriter(
+            OutputStreamWriter(FileOutputStream(FileDescriptor.out), StandardCharsets.US_ASCII),
+            512
+        ).use { bw ->
             val looping = true
 
             while (looping) {
@@ -18,15 +21,9 @@ fun main(args: Array<String>) {
                 if (nodeCount == 0 && edgeCount == 0) {
                     break
                 } else {
-                    if (nodeCount != 0 && edgeCount != 0) {
+                    if (nodeCount > 0 && edgeCount > 0) {
                         // Make sure edges is at least n-1
-                        if (nodeCount - 1 > edgeCount) {
-                            // Read through but do not construct since it will be an invalid MST
-                            for (i in 0 until edgeCount) {
-                                br.readLine()
-                            }
-                            bw.write("Impossible\n")
-                        } else {
+                        if (nodeCount <= edgeCount + 1) {
                             val minimumSpanningTree = MinimumSpanningTree(nodeCount, edgeCount)
 
                             // Loop through edges
@@ -39,15 +36,21 @@ fun main(args: Array<String>) {
                                 minimumSpanningTree.addNewEdge(firstNodeId, secondNodeId, edgeWeight)
                             }
 
-                            val result = minimumSpanningTree.getMst()
-                            if (result != null) {
-                                bw.write(minimumSpanningTree.totalCost.toString() + "\n")
+                            try {
+                                val result = minimumSpanningTree.getMst()
+                                bw.write(minimumSpanningTree.getTotalCost().toString() + "\n")
                                 result.forEach {
                                     bw.write(it.firstNodeId.toString() + " " + it.secondNodeId.toString() + "\n")
                                 }
-                            } else {
+                            } catch (e: UnreachableNode) {
                                 bw.write("Impossible\n")
                             }
+                        } else {
+                            // Read through but do not construct since it will be an invalid MST
+                            for (i in 0 until edgeCount) {
+                                br.readLine()
+                            }
+                            bw.write("Impossible\n")
                         }
                     } else {
                         bw.write("Impossible\n")
