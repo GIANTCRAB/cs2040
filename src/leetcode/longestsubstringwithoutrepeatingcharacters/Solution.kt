@@ -7,7 +7,7 @@ class Solution {
     private var windowEnd = 0
 
     fun lengthOfLongestSubstring(givenString: String): Int {
-        givenString.asSequence().forEachIndexed { index, value ->
+        givenString.forEachIndexed { index, value ->
             windowEnd += 1
             if (this.fullMap.containsKey(value)) {
                 val previousIndex: Int = this.fullMap[value]!!
