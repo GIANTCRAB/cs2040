@@ -2,24 +2,25 @@ package leetcode.longestsubstringwithoutrepeatingcharacters
 
 class Solution {
     private var longestLen = 0
-    private var window = HashMap<Char, Int>()
+    private var fullMap = HashMap<Char, Int>()
+    private var windowStart = 0
+    private var windowEnd = 0
 
     fun lengthOfLongestSubstring(givenString: String): Int {
         givenString.asSequence().forEachIndexed { index, value ->
-            if (this.window.containsKey(value)) {
-                // Remove everything until wherever it exists
-                val previousIndex: Int = this.window[value]!!
-                val windowIterator = this.window.iterator()
-                while (windowIterator.hasNext()) {
-                    val charData = windowIterator.next()
-                    if (charData.value <= previousIndex) {
-                        windowIterator.remove()
-                    }
+            windowEnd += 1
+            if (this.fullMap.containsKey(value)) {
+                val previousIndex: Int = this.fullMap[value]!!
+                // reframe
+                // prevent reframing from too behind
+                if (previousIndex >= windowStart) {
+                    windowStart = previousIndex + 1
                 }
             }
-            this.window[value] = index
-            if (this.longestLen < this.window.size) {
-                this.longestLen = this.window.size
+            this.fullMap[value] = index
+            val newWindowSize = windowEnd - windowStart
+            if (this.longestLen < newWindowSize) {
+                this.longestLen = newWindowSize
             }
         }
 
