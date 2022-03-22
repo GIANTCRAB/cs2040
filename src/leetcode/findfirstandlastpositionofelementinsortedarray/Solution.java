@@ -1,5 +1,6 @@
 package leetcode.findfirstandlastpositionofelementinsortedarray;
 
+// Very similar to searchinrotatedsortedarray
 class Solution {
     public int[] searchRange(int[] nums, int target) {
         if(nums.length > 1) {
