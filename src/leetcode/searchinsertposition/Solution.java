@@ -43,7 +43,7 @@ class Solution {
                 }
             }
 
-            // Not found anywhere, so insert at the start of end accordingly
+            // Not found anywhere, so insert at the start or end accordingly
             if (currentIndex == -1) {
                 return 0;
             }
