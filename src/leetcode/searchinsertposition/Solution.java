@@ -1,5 +1,6 @@
 package leetcode.searchinsertposition;
 
+// Start in the center and shift left/right accordingly
 class Solution {
     public int searchInsert(int[] nums, int target) {
         int foundIndex = -1;
@@ -8,7 +9,6 @@ class Solution {
             boolean leftHalt = false;
             boolean rightHalt = false;
 
-            // start in the center and shift left/right accordingly
             int currentIndex = (int) Math.floor((double) arrayLength / 2.0) - 1;
             if (nums[currentIndex] < target) {
                 rightHalt = true;
