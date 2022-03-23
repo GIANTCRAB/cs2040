@@ -11,6 +11,10 @@ public class solution {
         for (int a : sortedValues) {
             if (a == smallestInt) {
                 smallestInt++;
+            } else {
+                if (a > smallestInt) {
+                    break;
+                }
             }
         }
 
