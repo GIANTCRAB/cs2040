@@ -1,5 +1,6 @@
 package leetcode.nextpermutation;
 
+// TODO: I need to make it more readable
 class Solution {
     public void nextPermutation(int[] nums) {
         if (nums.length > 1) {
