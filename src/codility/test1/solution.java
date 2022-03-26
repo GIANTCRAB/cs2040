@@ -6,7 +6,7 @@ public class solution {
         final StringBuilder fullMessage = new StringBuilder();
         int currentIndex = 0;
         do {
-            final String value = S.substring(currentIndex, currentIndex + 1);
+            final char value = S.charAt(currentIndex);
             fullMessage.append(value);
             currentIndex = A[currentIndex];
         } while (currentIndex != 0);
