@@ -1,14 +1,17 @@
 package leetcode.combinationsum;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+// Bruteforce method that managed to pass
+// TODO: check if there's a better way to do this?
 public class Solution {
     final List<List<Integer>> fullList = new ArrayList<>();
 
     public List<List<Integer>> combinationSum(int[] candidates, int target) {
         final List<Integer> tempList = List.of();
-        this.getValidList(tempList, candidates, target, 0);
+        this.getValidList(tempList, Arrays.stream(candidates).sorted().toArray(), target, 0);
 
         return fullList;
     }
