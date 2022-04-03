@@ -10,8 +10,7 @@ public class Solution {
     final List<List<Integer>> fullList = new ArrayList<>();
 
     public List<List<Integer>> combinationSum(int[] candidates, int target) {
-        final List<Integer> tempList = List.of();
-        this.getValidList(tempList, Arrays.stream(candidates).sorted().toArray(), target, 0);
+        this.getValidList(List.of(), Arrays.stream(candidates).sorted().toArray(), target, 0);
 
         return fullList;
     }
