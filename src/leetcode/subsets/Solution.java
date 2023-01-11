@@ -1,7 +1,6 @@
 package leetcode.subsets;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 // TODO: Improve runtime from 2ms to 0ms?
 // TODO: Is there a way to use more primitives?
@@ -9,15 +8,14 @@ import java.util.stream.Collectors;
 class Solution {
     public List<List<Integer>> subsets(int[] nums) {
         final List<List<Integer>> fullList = new ArrayList<>();
-        final List<Integer> pool = Arrays.stream(nums).boxed().collect(Collectors.toList());
-        for (int i = 0; i <= pool.size(); i++) {
-            choose(pool, i, new ArrayList<>(), 0, fullList);
+        for (int i = 0; i <= nums.length; i++) {
+            choose(nums, i, new ArrayList<>(), 0, fullList);
         }
         return fullList;
     }
 
-    private static void choose(List<Integer> totalSet, int howManyToChoose, List<Integer> currentlyChosen, Integer lastChosenIndex, List<List<Integer>> results) {
-        if(totalSet.size() != 0) {
+    private static void choose(int[] totalSet, int howManyToChoose, List<Integer> currentlyChosen, Integer lastChosenIndex, List<List<Integer>> results) {
+        if(totalSet.length != 0) {
             if(currentlyChosen.size() < howManyToChoose) {
                 if(currentlyChosen.size() != 0) {
                     final List<Integer> children = getChildren(totalSet, lastChosenIndex);
@@ -28,9 +26,9 @@ class Solution {
                         choose(totalSet, howManyToChoose, cloneList, lastChosenIndex + i + 1, results);
                     }
                 } else {
-                    for (int i = 0; i < totalSet.size(); i++) {
+                    for (int i = 0; i < totalSet.length; i++) {
                         final List<Integer> cloneList = new ArrayList<>(currentlyChosen);
-                        cloneList.add(totalSet.get(i));
+                        cloneList.add(totalSet[i]);
                         // as we are just starting off, we only just need to increment by a + i (for its position)
                         choose(totalSet, howManyToChoose, cloneList, lastChosenIndex + i, results);
                     }
@@ -43,11 +41,11 @@ class Solution {
         }
     }
 
-    private static List<Integer> getChildren(List<Integer> totalSet, int index) {
+    private static List<Integer> getChildren(int[] totalSet, int index) {
         final List<Integer> children = new ArrayList<>();
         // To exclude itself from the children list, we need to increment by +1
-        for (int i = index + 1; i < totalSet.size(); i++) {
-            children.add(totalSet.get(i));
+        for (int i = index + 1; i < totalSet.length; i++) {
+            children.add(totalSet[i]);
         }
         return children;
     }
