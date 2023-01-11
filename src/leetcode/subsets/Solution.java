@@ -14,7 +14,7 @@ class Solution {
         return fullList;
     }
 
-    private static void choose(int[] totalSet, int howManyToChoose, List<Integer> currentlyChosen, Integer lastChosenIndex, List<List<Integer>> results) {
+    private static void choose(int[] totalSet, int howManyToChoose, List<Integer> currentlyChosen, int lastChosenIndex, List<List<Integer>> results) {
         if(totalSet.length != 0) {
             if(currentlyChosen.size() < howManyToChoose) {
                 if(currentlyChosen.size() != 0) {
