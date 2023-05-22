@@ -1,51 +1,48 @@
 package leetcode.mergesortedarray;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 
-//TODO: make it faster
+//TODO: make it in-place swapping
 public class Solution {
     public void merge(int[] leftArray, int leftArrayEndPoint, int[] rightArray, int rightArrayLength) {
         if (rightArrayLength == 0) {
             return;
         }
 
-        final int leftArrayLength = leftArray.length;
+        final ArrayList<Integer> integerArrayList = new ArrayList<>();
 
         int leftArrayIndex = 0;
-        int highestLeftIndex = leftArrayEndPoint;
         int rightArrayIndex = 0;
 
-        while (true) {
-            if (leftArrayIndex >= highestLeftIndex) {
-                // swap and increment right array index
-                final int leftArrayValue = leftArray[leftArrayIndex];
-                leftArray[leftArrayIndex] = rightArray[rightArrayIndex];
-                rightArray[rightArrayIndex] = leftArrayValue;
+        while (leftArrayIndex < leftArrayEndPoint || rightArrayIndex < rightArrayLength) {
+            if (leftArrayIndex == leftArrayEndPoint) {
+                integerArrayList.add(rightArray[rightArrayIndex]);
                 rightArrayIndex++;
-                leftArrayIndex = 0;
-                highestLeftIndex++;
-                if (rightArrayIndex == rightArrayLength) {
-                    break;
-                }
-            }
-            // When left side is larger, swap with the right side value
-            if (leftArray[leftArrayIndex] > rightArray[rightArrayIndex]) {
-                // swap and sort right side array
-                final int leftArrayValue = leftArray[leftArrayIndex];
-                leftArray[leftArrayIndex] = rightArray[rightArrayIndex];
-                rightArray[rightArrayIndex] = leftArrayValue;
-                leftArrayIndex = 0;
-                rightArray = sortArray(rightArray);
             } else {
-                leftArrayIndex++;
-                if (leftArrayIndex == leftArrayLength) {
-                    break;
+                if (rightArrayIndex == rightArrayLength) {
+                    integerArrayList.add(leftArray[leftArrayIndex]);
+                    leftArrayIndex++;
+                } else {
+                    if (leftArray[leftArrayIndex] < rightArray[rightArrayIndex]) {
+                        integerArrayList.add(leftArray[leftArrayIndex]);
+                        leftArrayIndex++;
+                    } else {
+                        if (leftArray[leftArrayIndex] == rightArray[rightArrayIndex]) {
+                            integerArrayList.add(leftArray[leftArrayIndex]);
+                            integerArrayList.add(rightArray[rightArrayIndex]);
+                            leftArrayIndex++;
+                            rightArrayIndex++;
+                        } else {
+                            integerArrayList.add(rightArray[rightArrayIndex]);
+                            rightArrayIndex++;
+                        }
+                    }
                 }
             }
         }
-    }
 
-    private int[] sortArray(int[] givenArray) {
-        return Arrays.stream(givenArray).sorted().toArray();
+        for (int i = 0; i < integerArrayList.size(); i++) {
+            leftArray[i] = integerArrayList.get(i);
+        }
     }
 }
