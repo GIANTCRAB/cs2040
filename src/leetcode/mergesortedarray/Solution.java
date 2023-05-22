@@ -1,7 +1,5 @@
 package leetcode.mergesortedarray;
 
-import java.util.ArrayList;
-
 //TODO: make it in-place swapping
 public class Solution {
     public void merge(int[] leftArray, int leftArrayEndPoint, int[] rightArray, int rightArrayLength) {
@@ -9,40 +7,41 @@ public class Solution {
             return;
         }
 
-        final ArrayList<Integer> integerArrayList = new ArrayList<>();
+        int[] integerArray = new int[leftArray.length];
 
         int leftArrayIndex = 0;
         int rightArrayIndex = 0;
+        int indexCounter = 0;
 
         while (leftArrayIndex < leftArrayEndPoint || rightArrayIndex < rightArrayLength) {
             if (leftArrayIndex == leftArrayEndPoint) {
-                integerArrayList.add(rightArray[rightArrayIndex]);
+                integerArray[indexCounter] = rightArray[rightArrayIndex];
                 rightArrayIndex++;
             } else {
                 if (rightArrayIndex == rightArrayLength) {
-                    integerArrayList.add(leftArray[leftArrayIndex]);
+                    integerArray[indexCounter] = leftArray[leftArrayIndex];
                     leftArrayIndex++;
                 } else {
                     if (leftArray[leftArrayIndex] < rightArray[rightArrayIndex]) {
-                        integerArrayList.add(leftArray[leftArrayIndex]);
+                        integerArray[indexCounter] = leftArray[leftArrayIndex];
                         leftArrayIndex++;
                     } else {
                         if (leftArray[leftArrayIndex] == rightArray[rightArrayIndex]) {
-                            integerArrayList.add(leftArray[leftArrayIndex]);
-                            integerArrayList.add(rightArray[rightArrayIndex]);
+                            integerArray[indexCounter] = leftArray[leftArrayIndex];
+                            indexCounter++;
+                            integerArray[indexCounter] = rightArray[rightArrayIndex];
                             leftArrayIndex++;
                             rightArrayIndex++;
                         } else {
-                            integerArrayList.add(rightArray[rightArrayIndex]);
+                            integerArray[indexCounter] = rightArray[rightArrayIndex];
                             rightArrayIndex++;
                         }
                     }
                 }
             }
+            indexCounter++;
         }
 
-        for (int i = 0; i < integerArrayList.size(); i++) {
-            leftArray[i] = integerArrayList.get(i);
-        }
+        System.arraycopy(integerArray, 0, leftArray, 0, integerArray.length);
     }
 }
