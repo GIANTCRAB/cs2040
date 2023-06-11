@@ -1,3 +1,4 @@
+package algorithmstuff.proceduralgrid;
 
 import java.util.*;
 
