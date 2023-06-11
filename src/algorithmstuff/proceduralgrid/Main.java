@@ -134,9 +134,9 @@ public class Main {
             this.neighbours = new HashSet<>();
         }
 
-        // Do a re-calculation to add new neighbours in
         public void updateNeighbours(Set<Node> allNodes) {
-
+            this.neighbours.clear();
+            this.neighbours.addAll(allNodes);
         }
         public void addNeighbour(Node neighbourNode) {
             this.neighbours.add(neighbourNode);
