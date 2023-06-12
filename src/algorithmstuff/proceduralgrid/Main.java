@@ -33,8 +33,30 @@ public class Main {
 
         public void doMapping() {
             final Pair<Integer, Integer> startingCoordinate = new Pair<>(0, 0);
-            final Node startingNode = this.createNewNode(startingCoordinate);
-            this.diveNode(startingNode, 0);
+            final Node startingNode = this.createNewNode(startingCoordinate, 0);
+
+            final Stack<Node> nodeStack = new Stack<>();
+            nodeStack.push(startingNode);
+
+            while(!nodeStack.isEmpty()) {
+                final Node currentNode = nodeStack.pop();
+                final int currentDepth = currentNode.getDepth();
+                if(currentDepth < this.maxDepth) {
+                    for (int i = -1; i <= 1; i++) {
+                        for (int j = -1; j <= 1; j++) {
+                            if(getRelativeCoordinateValidity(i, j)) {
+                                final Pair<Integer, Integer> targetCoordinate = new Pair<>(currentNode.getX() + i, currentNode.getY() + j);
+                                if(!this.mapData.containsKey(targetCoordinate)) {
+                                    if(this.generator.nextBoolean()) {
+                                        final Node newNode = this.createNewNode(targetCoordinate, currentDepth + 1);
+                                        nodeStack.push(newNode);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         public void printMapping() {
@@ -53,32 +75,7 @@ public class Main {
             System.out.println(stringBuilder);
         }
 
-        private void diveNode(Node subjectNode, int currentDepth) {
-            if(currentDepth >= maxDepth) {
-                return;
-            }
-
-            for (int i = -1; i <= 1; i++) {
-                for (int j = -1; j <= 1; j++) {
-                    final boolean isNotCenter = !(i == 0 && j == 0);
-                    final boolean isNotTopLeft = !(i == -1 && j == -1);
-                    final boolean isNotBottomLeft = !(i == -1 && j == 1);
-                    final boolean isNotTopRight = !(i == 1 && j == -1);
-                    final boolean isNotBottomRight = !(i == 1 && j == 1);
-                    if(isNotCenter && isNotTopLeft && isNotBottomLeft && isNotTopRight && isNotBottomRight) {
-                        final Pair<Integer, Integer> targetCoordinate = new Pair<>(subjectNode.getX() + i, subjectNode.getY() + j);
-                        if(!this.mapData.containsKey(targetCoordinate)) {
-                            if(this.generator.nextBoolean()) {
-                                final Node newNode = this.createNewNode(targetCoordinate);
-                                diveNode(newNode, currentDepth + 1);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        private Node createNewNode(Pair<Integer, Integer> targetCoordinate) {
+        private Node createNewNode(Pair<Integer, Integer> targetCoordinate, int depth) {
             if(targetCoordinate.firstData < this.smallestX) {
                 this.smallestX = targetCoordinate.firstData;
             }
@@ -92,7 +89,7 @@ public class Main {
                 this.largestY = targetCoordinate.secondData;
             }
 
-            final Node newNode = new Node(targetCoordinate.firstData, targetCoordinate.secondData);
+            final Node newNode = new Node(targetCoordinate.firstData, targetCoordinate.secondData, depth);
             final Set<Node> newNodeNeighbours = calculateAllNeighbours(newNode);
             newNode.updateNeighbours(newNodeNeighbours);
             for (Node newNodeNeighbour: newNodeNeighbours) {
@@ -106,12 +103,7 @@ public class Main {
             final Set<Node> neighbours = new HashSet<>();
             for (int i = -1; i <= 1; i++) {
                 for (int j = -1; j <= 1; j++) {
-                    final boolean isNotCenter = !(i == 0 && j == 0);
-                    final boolean isNotTopLeft = !(i == -1 && j == -1);
-                    final boolean isNotBottomLeft = !(i == -1 && j == 1);
-                    final boolean isNotTopRight = !(i == 1 && j == -1);
-                    final boolean isNotBottomRight = !(i == 1 && j == 1);
-                    if (isNotCenter && isNotTopLeft && isNotBottomLeft && isNotTopRight && isNotBottomRight) {
+                    if (getRelativeCoordinateValidity(i, j)) {
                         final Pair<Integer, Integer> targetCoordinate = new Pair<>(subjectNode.getX() + i, subjectNode.getY() + j);
                         if (this.mapData.containsKey(targetCoordinate)) {
                             neighbours.add(this.mapData.get(targetCoordinate));
@@ -121,16 +113,27 @@ public class Main {
             }
             return neighbours;
         }
+
+        private static boolean getRelativeCoordinateValidity(int x, int y) {
+            final boolean isNotCenter = !(x == 0 && y == 0);
+            final boolean isNotTopLeft = !(x == -1 && y == -1);
+            final boolean isNotBottomLeft = !(x == -1 && y == 1);
+            final boolean isNotTopRight = !(x == 1 && y == -1);
+            final boolean isNotBottomRight = !(x == 1 && y == 1);
+            return (isNotCenter && isNotTopLeft && isNotBottomLeft && isNotTopRight && isNotBottomRight);
+        }
     }
 
     private static class Node {
         private final int x;
         private final int y;
+        private final int depth;
         private final Set<Node> neighbours;
 
-        public Node(int x, int y) {
+        public Node(int x, int y, int depth) {
             this.x = x;
             this.y = y;
+            this.depth = depth;
             this.neighbours = new HashSet<>();
         }
 
@@ -148,6 +151,10 @@ public class Main {
 
         public int getY() {
             return y;
+        }
+
+        public int getDepth() {
+            return depth;
         }
 
         public Set<Node> getNeighbours() {
