@@ -61,8 +61,8 @@ public class Main {
 
         public void printMapping() {
             StringBuilder stringBuilder = new StringBuilder();
-            for (int x = this.smallestX; x <= largestX; x++) {
-                for (int y = this.smallestY; y <= largestY; y++) {
+            for (int x = this.smallestX; x <= this.largestX; x++) {
+                for (int y = this.smallestY; y <= this.largestY; y++) {
                     final Pair<Integer, Integer> targetCoordinate = new Pair<>(x, y);
                     if(this.mapData.containsKey(targetCoordinate)) {
                         stringBuilder.append("X ");
