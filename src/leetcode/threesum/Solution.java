@@ -1,55 +1,41 @@
 package leetcode.threesum;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
-// TODO: Fix Time Limit Exceeded
+// TODO: Improve run time performance
 class Solution {
-    public List<List<Integer>> threeSum(int[] nums, List<List<Long>> answer) {
-        if (nums.length < 3) {
-            return new ArrayList<>();
-        } else {
-            final HashSet<String> usedTable = new HashSet<>();
-            final List<List<Integer>> fullList = new ArrayList<>();
-            int firstIndex = 0;
-            int secondIndex = 1;
-            int thirdIndex = 2;
-            final int numsLength = nums.length;
-            while (firstIndex < numsLength) {
-                if (secondIndex < numsLength) {
-                    if (thirdIndex < numsLength) {
-                        final int firstValue = nums[firstIndex];
-                        final int secondValue = nums[secondIndex];
-                        final int thirdValue = nums[thirdIndex];
-                        if (firstValue + secondValue + thirdValue == 0 && !usedTable.contains(firstValue + "," + secondValue + "," + thirdValue)) {
-                            final List<Integer> tripleList = new ArrayList<>();
-                            tripleList.add(firstValue);
-                            tripleList.add(secondValue);
-                            tripleList.add(thirdValue);
-                            fullList.add(tripleList);
-
-                            usedTable.add(firstValue + "," + secondValue + "," + thirdValue);
-                            usedTable.add(firstValue + "," + thirdValue + "," + secondValue);
-                            usedTable.add(secondValue + "," + firstValue + "," + thirdValue);
-                            usedTable.add(secondValue + "," + thirdValue + "," + firstValue);
-                            usedTable.add(thirdValue + "," + firstValue + "," + secondValue);
-                            usedTable.add(thirdValue + "," + secondValue + "," + firstValue);
-                        }
-                        thirdIndex++;
-                    } else {
-                        secondIndex++;
-                        thirdIndex = secondIndex + 1;
-                    }
+    public List<List<Integer>> threeSum(int[] sortedArray) {
+        final Set<List<Integer>> fullSet = new HashSet<>();
+        // Sort the given array first
+        Arrays.sort(sortedArray);
+        int firstFixedIndex = 0;
+        int firstMovingIndex = 1;
+        int secondMovingIndex = sortedArray.length - 1;
+        while(firstFixedIndex + 2 < sortedArray.length) {
+            while(firstMovingIndex < secondMovingIndex) {
+                final int sumResult = sortedArray[firstFixedIndex] + sortedArray[firstMovingIndex] + sortedArray[secondMovingIndex];
+                if(sumResult == 0) {
+                    final List<Integer> newList = new ArrayList<>();
+                    newList.add(sortedArray[firstFixedIndex]);
+                    newList.add(sortedArray[firstMovingIndex]);
+                    newList.add(sortedArray[secondMovingIndex]);
+                    fullSet.add(newList);
+                    firstMovingIndex++;
                 } else {
-                    firstIndex++;
-                    secondIndex = firstIndex + 1;
-                    thirdIndex = secondIndex + 1;
+                    if (sumResult < 0) {
+                        // negative right now, need to move firstMovingIndex forward towards a positive number
+                        firstMovingIndex++;
+                    } else {
+                        // positive right now, need to move secondMovingIndex backwards towards a negative number
+                        secondMovingIndex--;
+                    }
                 }
-
             }
-
-            return fullList;
+            firstFixedIndex++;
+            firstMovingIndex = firstFixedIndex + 1;
+            secondMovingIndex = sortedArray.length - 1;
         }
+
+        return new ArrayList<>(fullSet);
     }
 }
