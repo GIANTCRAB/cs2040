@@ -1,9 +1,6 @@
 package algorithmstuff.mergesort;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
@@ -12,16 +9,11 @@ public class Main {
     }
 
     public static void mergeSort(int[] startingArray) {
-        // We need pointers for this, convert them into array list
-        final List<Integer> workingArray = Arrays.stream(startingArray)
-                .boxed()
-                .collect(Collectors.toList());
-
-        final List<Integer> referenceArray = new ArrayList<>(workingArray);
-        topDownSplitMerge(workingArray, 0, startingArray.length, referenceArray);
+        int[] referenceArray = Arrays.copyOf(startingArray, startingArray.length);
+        topDownSplitMerge(startingArray, 0, startingArray.length, referenceArray);
     }
 
-    public static void topDownSplitMerge(List<Integer> workingArray, int indexStart, int indexEnd, List<Integer> referenceArray) {
+    public static void topDownSplitMerge(int[] workingArray, int indexStart, int indexEnd, int[] referenceArray) {
         if(indexEnd - indexStart <= 1) {
             return;
         }
@@ -31,18 +23,18 @@ public class Main {
         topDownMerge(workingArray, indexStart, indexMiddle, indexEnd, referenceArray);
     }
 
-    public static void topDownMerge(List<Integer> workingArray, int indexStart, int indexMiddle, int indexEnd, List<Integer> referenceArray) {
+    public static void topDownMerge(int[] workingArray, int indexStart, int indexMiddle, int indexEnd, int[] referenceArray) {
         int movingLeftIndex = indexStart;
         int movingRightIndex = indexMiddle;
         for (int i = indexStart; i < indexEnd; i++) {
-            if(movingLeftIndex < indexMiddle && (movingRightIndex >= indexEnd || referenceArray.get(movingLeftIndex) <= referenceArray.get(movingRightIndex))) {
-                workingArray.set(i, referenceArray.get(movingLeftIndex));
+            if(movingLeftIndex < indexMiddle && (movingRightIndex >= indexEnd || referenceArray[movingLeftIndex] <= referenceArray[movingRightIndex])) {
+                workingArray[i] = referenceArray[movingLeftIndex];
                 movingLeftIndex++;
             } else {
-                workingArray.set(i, referenceArray.get(movingRightIndex));
+                workingArray[i] = referenceArray[movingRightIndex];
                 movingRightIndex++;
             }
         }
-        System.out.println(workingArray);
+        System.out.println(Arrays.toString(workingArray));
     }
 }
