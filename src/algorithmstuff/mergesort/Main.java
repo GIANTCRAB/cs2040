@@ -1,41 +1,48 @@
 package algorithmstuff.mergesort;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
-        int[] exampleArray = new int[]{5, 8, 2, 1, 0, -5, 5000, 4, 503, 999 ,222};
+        int[] exampleArray = new int[]{3, 1, 99, 2, -5, 500, 5000, 66};
         mergeSort(exampleArray);
     }
 
     public static void mergeSort(int[] startingArray) {
-        topDownSplitMerge(startingArray, 0, startingArray.length);
+        // We need pointers for this, convert them into array list
+        final List<Integer> workingArray = Arrays.stream(startingArray)
+                .boxed()
+                .collect(Collectors.toList());
+
+        final List<Integer> referenceArray = new ArrayList<>(workingArray);
+        topDownSplitMerge(workingArray, 0, startingArray.length, referenceArray);
     }
 
-    public static int[] topDownSplitMerge(int[] workingArray, int indexStart, int indexEnd) {
+    public static void topDownSplitMerge(List<Integer> workingArray, int indexStart, int indexEnd, List<Integer> referenceArray) {
         if(indexEnd - indexStart <= 1) {
-            return workingArray;
+            return;
         }
         final int indexMiddle = (indexStart + indexEnd) / 2;
-        workingArray = topDownSplitMerge(workingArray, indexStart, indexMiddle);
-        workingArray = topDownSplitMerge(workingArray, indexMiddle, indexEnd);
-        return topDownMerge(workingArray, indexStart, indexMiddle, indexEnd);
+        topDownSplitMerge(referenceArray, indexStart, indexMiddle, workingArray);
+        topDownSplitMerge(referenceArray, indexMiddle, indexEnd, workingArray);
+        topDownMerge(workingArray, indexStart, indexMiddle, indexEnd, referenceArray);
     }
 
-    public static int[] topDownMerge(int[] workingArray, int indexStart, int indexMiddle, int indexEnd) {
-        final int[] referenceArray = Arrays.copyOf(workingArray, workingArray.length);
+    public static void topDownMerge(List<Integer> workingArray, int indexStart, int indexMiddle, int indexEnd, List<Integer> referenceArray) {
         int movingLeftIndex = indexStart;
         int movingRightIndex = indexMiddle;
         for (int i = indexStart; i < indexEnd; i++) {
-            if(movingLeftIndex < indexMiddle && (movingRightIndex >= indexEnd || referenceArray[movingLeftIndex] <= referenceArray[movingRightIndex])) {
-                workingArray[i] = referenceArray[movingLeftIndex];
+            if(movingLeftIndex < indexMiddle && (movingRightIndex >= indexEnd || referenceArray.get(movingLeftIndex) <= referenceArray.get(movingRightIndex))) {
+                workingArray.set(i, referenceArray.get(movingLeftIndex));
                 movingLeftIndex++;
             } else {
-                workingArray[i] = referenceArray[movingRightIndex];
+                workingArray.set(i, referenceArray.get(movingRightIndex));
                 movingRightIndex++;
             }
         }
-        System.out.println(Arrays.toString(workingArray));
-        return workingArray;
+        System.out.println(workingArray);
     }
 }
