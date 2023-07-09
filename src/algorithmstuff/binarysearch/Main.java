@@ -26,10 +26,12 @@ public class Main {
             } else {
                 if (givenArray[middleIndex] < target) {
                     // Focus on right search
-                    return binarySearch(givenArray, target, middleIndex + 1, endIndex);
+                    final int newStartIndex = Math.min(endIndex, middleIndex + 1);
+                    return binarySearch(givenArray, target, newStartIndex, endIndex);
                 } else {
                     // Focus on left search
-                    return binarySearch(givenArray, target, startIndex, middleIndex - 1);
+                    final int newEndIndex = Math.max(startIndex, middleIndex - 1);
+                    return binarySearch(givenArray, target, startIndex, newEndIndex);
                 }
             }
         }
