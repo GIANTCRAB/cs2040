@@ -1,61 +1,42 @@
 package leetcode.containerwithmostwater;
 
-// TODO: Make it faster
-public class Solution {
+// I think of scanning from one point to another point
+// In a way, it is kind of a basic sliding window. you never need to check the points you have passed-by.
+// my right index will always be the last point. and thereafter, it should continuously shrink
+// we keep checking the amount remaining as our right index decrements
+// as for optimisation, i think we can stop shrinking when:
+// the current biggest beats the largest possible water amount (height of the left index * distance)
+class Solution {
     public int maxArea(int[] height) {
-        final int heightLength = height.length;
-        // min value, distance
-        int largestArea = 0;
+        // Start from left to right
+        // have 2 indices. the right index will shrink
 
-        // scan from left to right
-        for (int leftIndex = 0; leftIndex < heightLength; leftIndex++) {
-            final int startPointHeight = height[leftIndex];
+        int largestAmount = 0;
 
-            int furthestIndex = heightLength - 1;
-            while (true) {
-                int furthestValue = height[furthestIndex];
-                if (furthestValue >= startPointHeight) {
-                    final int distanceBetweenIndex = furthestIndex - leftIndex;
-                    final int area = distanceBetweenIndex * startPointHeight;
-                    if (area > largestArea) {
-                        largestArea = area;
-                    }
+        for (int leftIndex = 0; leftIndex < (height.length - 1); leftIndex++) {
+            if (height[leftIndex] == 0) {
+                continue;
+            }
+            for (int rightIndex = height.length - 1; rightIndex > leftIndex; rightIndex--) {
+                if (height[rightIndex] == 0) {
+                    continue;
+                }
+                int distance = rightIndex - leftIndex;
+                int shortestHeight = Math.min(height[leftIndex], height[rightIndex]);
+                int amount = distance * shortestHeight;
+
+                if (amount > largestAmount) {
+                    largestAmount = amount;
+                }
+
+                // optimisation: the current biggest beats the largest possible water amount
+                int nextPossibleLargestAmount = height[leftIndex] * (distance - 1);
+                if(nextPossibleLargestAmount <= largestAmount) {
                     break;
-                } else {
-                    if (furthestIndex > leftIndex) {
-                        furthestIndex--;
-                    } else {
-                        break;
-                    }
                 }
             }
         }
 
-        // scan right to left
-        for (int rightIndex = heightLength - 1; rightIndex > -1; rightIndex--) {
-            final int startPointHeight = height[rightIndex];
-
-            int furthestIndex = 0;
-            while (true) {
-                int furthestValue = height[furthestIndex];
-                if (furthestValue >= startPointHeight) {
-                    final int distanceBetweenIndex = rightIndex - furthestIndex;
-                    final int area = distanceBetweenIndex * startPointHeight;
-                    if (area > largestArea) {
-                        largestArea = area;
-                    }
-                    break;
-                } else {
-                    if (furthestIndex < rightIndex) {
-                        furthestIndex++;
-                    } else {
-                        break;
-                    }
-                }
-            }
-        }
-
-        return largestArea;
+        return largestAmount;
     }
 }
-
