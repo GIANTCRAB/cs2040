@@ -1,5 +1,12 @@
 package leetcode.longestpalindromicsubstring;
 
+// I first identify that we have 2 types of palindromes - odd and even
+// we can center our checks around a rootIndex
+// everytime we begin our checks, leftIndex will decrement, rightIndex will increase
+// I check that the character on left == character on right
+// if that fails, then it is not a palindrome and we can break its sub-loop
+// For optimisation, if we know the remaining length on the string to check is smaller than or equal to
+// our longest palindrome length, we can end it since we won't find a better palindrome
 class Solution {
     public String longestPalindrome(String s) {
         String longestPalindrome = s.substring(0, 1);
