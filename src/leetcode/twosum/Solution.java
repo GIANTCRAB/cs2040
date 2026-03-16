@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Solution {
+    // Since the constraint state that the nums are unique
+    // This means that we could use the values as the hash key
+    // and have its number index as the hash value
     public int[] twoSum(int[] nums, int target) {
         int[] result = new int[2];
         Map<Integer, Integer> data = new HashMap<>();
