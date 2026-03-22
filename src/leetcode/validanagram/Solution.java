@@ -1,43 +1,30 @@
 package leetcode.validanagram;
 
-import java.util.*;
-
 class Solution {
     // I am thinking if I can use a HashMap to contain data of the number of occurrences
     // first pass to store s in space. O(s) space + O(s) performance
     // second pass to check number of usage O(t) performance
     // total performance: O(s) + O(t) = O(s)
+    // actually, now that i think about it
+    // we can transform them into simple string
+    // use a fixed size array char[26]
     public boolean isAnagram(String s, String t) {
         if(s.length() != t.length()) {
             return false;
         }
 
-        Map<Character, Integer> data = new HashMap<>();
+        char[] data = new char[26]; // only 26 characters
         for(int i = 0; i < s.length(); i++) {
-            Character characterAppearance = s.charAt(i);
-            if(data.containsKey(characterAppearance)) {
-                Integer existingData = data.get(characterAppearance);
-                existingData++;
-                data.put(characterAppearance, existingData);
-            } else {
-
-                data.put(characterAppearance, 1);
-            }
+            char character = s.charAt(i);
+            data[(character - 97)]++;
         }
 
-        for(int j = 0; j < t.length(); j++) {
-            Character characterAppearance = t.charAt(j);
-            if(data.containsKey(characterAppearance)) {
-                Integer existingData = data.get(characterAppearance);
-                if(existingData == 0) {
-                    return false;
-                }
-                existingData--;
-                data.put(characterAppearance, existingData);
-            } else {
-                return false;
-            }
+        char[] secondData = new char[26]; // only 26 characters
+        for(int i = 0; i < t.length(); i++) {
+            char character = t.charAt(i);
+            secondData[(character - 97)]++;
         }
-        return true;
+
+        return String.valueOf(data).equals(String.valueOf(secondData));
     }
 }
