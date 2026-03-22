@@ -17,13 +17,19 @@ class Solution {
     // sort the character array using Arrays.sort
     // transform the character array back into a single string
     // use that single string as the key
+    // actually, we don't even need the sort.
+    // we can use a fixed size char[] and then do value increments
+    // thereafter, cast it to a string
     public List<List<String>> groupAnagrams(String[] strs) {
         Map<String, List<String>> anagrams = new HashMap<>();
         for(String str : strs) {
-            char[] characters = str.toCharArray();
-            Arrays.sort(characters);
-            String groupKey = String.valueOf(characters);
-
+            char[] group = new char[26]; // there are 26 characters in alphabet
+            for(int i = 0; i < str.length(); i++) {
+                char c = str.charAt(i);
+                int characterNumber = c - 97;
+                group[characterNumber] = (char) (((int) group[characterNumber]) + 1);
+            }
+            String groupKey = String.valueOf(group);
             if(anagrams.containsKey(groupKey)) {
                 List<String> anagramGroup = anagrams.get(groupKey);
                 anagramGroup.add(str);
